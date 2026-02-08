@@ -1,0 +1,33 @@
+<div class="h-[calc(100vh-64px)] mt-16 p-6 overflow-x-auto overflow-y-hidden" cdkDropListGroup>
+
+    @if (board(); as data) {
+    <div class="flex h-full gap-6 min-w-fit pb-4 snap-x px-6">
+
+        <!-- Columns Loop -->
+        @for (column of data.columns; track column.id) {
+        <app-nexus-column [column]="column" (cardDropped)="drop($event)" class="snap-center">
+        </app-nexus-column>
+        }
+
+        <!-- Add Column Button -->
+        <div class="w-80 flex-shrink-0">
+            <button (click)="openAddColumn()"
+                class="w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 text-white/60 font-medium flex items-center justify-center gap-2 transition-all">
+                <span>+</span> Add Another Column
+            </button>
+        </div>
+
+    </div>
+    } @else {
+    <!-- Loading Skeleton -->
+    <div class="flex gap-6 animate-pulse">
+        @for (i of [1,2,3]; track i) {
+        <div class="w-80 h-96 rounded-xl bg-white/5 border border-white/5 p-4 space-y-4">
+            <div class="h-6 w-1/2 bg-white/10 rounded"></div>
+            <div class="h-24 bg-white/5 rounded-lg"></div>
+            <div class="h-24 bg-white/5 rounded-lg"></div>
+        </div>
+        }
+    </div>
+    }
+</div>

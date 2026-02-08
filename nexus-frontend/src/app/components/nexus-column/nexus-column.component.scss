@@ -1,0 +1,35 @@
+// Highlight the drop zone when an item is dragging over it
+.cdk-drop-list-dragging .cdk-drop-list-receiving {
+    background: rgba(139, 92, 246, 0.1) !important; // Violet glow
+    border-color: rgba(139, 92, 246, 0.3) !important;
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.15);
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+// Style the placeholder (gap where item will drop)
+.cdk-drag-placeholder {
+    opacity: 0;
+}
+
+// When dragging, the original element in the list
+.cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+    will-change: transform;
+}
+
+// Smooth reordering
+.cdk-drop-list-dragging .cdk-drag {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+    will-change: transform;
+}
+
+// Optimization for the drag preview (the ghost)
+.cdk-drag-preview {
+    will-change: transform;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    backdrop-filter: none !important;
+    background: rgba(139, 92, 246, 0.95);
+    transition: none !important;
+    /* CRITICAL: No transition delay */
+    transform-origin: center center;
+}
