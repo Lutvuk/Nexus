@@ -147,12 +147,6 @@ Detailed checklist: `docs/11-Deployment-Checklist.md`
 - API base: `/api/v1/...` (boards, cards, columns, workspaces, notifications, etc.)
 - Realtime: `/ws`
 
-## Known Operational Tips
-- If browser still shows old logo/UI after deploy:
-  - hard refresh (`Ctrl+F5`) once
-- If Docker fails to build after interruption:
-  - rerun `docker compose ... up --build -d`
-
 ## Project Documentation
 Complete docs are under `docs/`:
 
