@@ -3,9 +3,9 @@
 
     <!-- Board Header Bar -->
     <div
-        class="flex flex-col gap-2 px-3 sm:px-4 py-2 flex-shrink-0 bg-black/40 backdrop-blur-md border-b border-white/5 z-10">
+        class="flex items-center gap-2 px-3 sm:px-4 py-2 flex-shrink-0 bg-black/40 backdrop-blur-md border-b border-white/5 z-10">
         @if (board(); as data) {
-        <div class="flex items-center gap-2 sm:gap-3 h-9 min-w-0">
+        <div class="flex items-center gap-2 sm:gap-3 h-9 shrink-0 min-w-0">
             <h2 class="text-base sm:text-lg font-bold text-white truncate max-w-[60vw] sm:max-w-none shadow-black drop-shadow-md">{{ data.title }}</h2>
             <button (click)="toggleStar()" class="p-1.5 rounded-lg hover:bg-white/10 transition-all"
                 [ngClass]="data.is_starred ? 'text-amber-400' : 'text-white/20'"
@@ -21,7 +21,7 @@
         }
 
         <!-- Search & Filter Area -->
-        <div class="flex items-center gap-2 sm:gap-3 h-9 w-full overflow-x-auto lg:overflow-visible pb-1 lg:pb-0 custom-scrollbar">
+        <div class="flex-1 min-w-0 flex items-center gap-2 sm:gap-3 h-9 overflow-x-auto pb-1 custom-scrollbar">
             <div class="relative group max-w-sm w-full">
                 <input #searchInput type="text" [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)"
                     placeholder="Search cards..."
