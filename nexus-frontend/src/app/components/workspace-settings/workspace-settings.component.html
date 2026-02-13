@@ -1,8 +1,8 @@
 <div class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm p-4 md:p-6" (click)="close.emit()">
-    <div class="mx-auto h-full max-h-[860px] w-full max-w-6xl rounded-2xl nexus-panel-shell overflow-hidden flex"
+    <div class="mx-auto h-full max-h-[92vh] md:max-h-[860px] w-full max-w-6xl rounded-2xl nexus-panel-shell overflow-hidden flex flex-col lg:flex-row"
         (click)="$event.stopPropagation()">
         <!-- Sidebar -->
-        <aside class="w-[260px] shrink-0 border-r border-white/10 bg-black/20 p-4">
+        <aside class="w-full lg:w-[260px] shrink-0 border-b lg:border-b-0 lg:border-r border-white/10 bg-black/20 p-3 sm:p-4 max-h-[40vh] lg:max-h-none overflow-y-auto">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-lg font-bold text-white">Workspace Settings</h2>
                 <button (click)="close.emit()" class="nexus-icon-btn" aria-label="Close workspace settings">
@@ -27,52 +27,56 @@
             </div>
 
             <div class="text-xs uppercase tracking-wider text-white/35 mb-2">Personal Settings</div>
-            <button (click)="activeSection.set('profile')"
-                class="w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors mb-1"
-                [ngClass]="activeSection() === 'profile' ? 'bg-violet-600/20 border border-violet-500/40 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'">
-                Profile and Visibility
-            </button>
-            <button (click)="activeSection.set('activity')"
-                class="w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors mb-1"
-                [ngClass]="activeSection() === 'activity' ? 'bg-violet-600/20 border border-violet-500/40 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'">
-                Activity
-            </button>
-            <button (click)="activeSection.set('account')"
-                class="w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors mb-4"
-                [ngClass]="activeSection() === 'account' ? 'bg-violet-600/20 border border-violet-500/40 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'">
-                Settings
-            </button>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-1 gap-1 mb-4">
+                <button (click)="activeSection.set('profile')"
+                    class="w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors"
+                    [ngClass]="activeSection() === 'profile' ? 'bg-violet-600/20 border border-violet-500/40 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'">
+                    Profile and Visibility
+                </button>
+                <button (click)="activeSection.set('activity')"
+                    class="w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors"
+                    [ngClass]="activeSection() === 'activity' ? 'bg-violet-600/20 border border-violet-500/40 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'">
+                    Activity
+                </button>
+                <button (click)="activeSection.set('account')"
+                    class="w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors"
+                    [ngClass]="activeSection() === 'account' ? 'bg-violet-600/20 border border-violet-500/40 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'">
+                    Settings
+                </button>
+            </div>
 
             <div class="text-xs uppercase tracking-wider text-white/35 mb-2">Workspace</div>
-            <button (click)="activeSection.set('general')"
-                class="w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors mb-1"
-                [ngClass]="activeSection() === 'general' ? 'bg-violet-600/20 border border-violet-500/40 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'">
-                General
-            </button>
-            <button (click)="activeSection.set('members')"
-                class="w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors mb-1"
-                [ngClass]="activeSection() === 'members' ? 'bg-violet-600/20 border border-violet-500/40 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'">
-                Members
-            </button>
-            <button (click)="activeSection.set('requests')"
-                class="w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors mb-1"
-                [ngClass]="activeSection() === 'requests' ? 'bg-violet-600/20 border border-violet-500/40 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'">
-                Join Requests
-            </button>
-            <button (click)="activeSection.set('invite')"
-                class="w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors"
-                [ngClass]="activeSection() === 'invite' ? 'bg-violet-600/20 border border-violet-500/40 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'">
-                Invite Link
-            </button>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-1 gap-1">
+                <button (click)="activeSection.set('general')"
+                    class="w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors"
+                    [ngClass]="activeSection() === 'general' ? 'bg-violet-600/20 border border-violet-500/40 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'">
+                    General
+                </button>
+                <button (click)="activeSection.set('members')"
+                    class="w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors"
+                    [ngClass]="activeSection() === 'members' ? 'bg-violet-600/20 border border-violet-500/40 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'">
+                    Members
+                </button>
+                <button (click)="activeSection.set('requests')"
+                    class="w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors"
+                    [ngClass]="activeSection() === 'requests' ? 'bg-violet-600/20 border border-violet-500/40 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'">
+                    Join Requests
+                </button>
+                <button (click)="activeSection.set('invite')"
+                    class="w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors"
+                    [ngClass]="activeSection() === 'invite' ? 'bg-violet-600/20 border border-violet-500/40 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'">
+                    Invite Link
+                </button>
+            </div>
         </aside>
 
         <!-- Content -->
         <section class="flex-1 min-w-0 flex flex-col">
-            <div class="px-6 py-4 border-b border-white/10 bg-white/[0.02]">
+            <div class="px-4 sm:px-6 py-4 border-b border-white/10 bg-white/[0.02]">
                 <h3 class="text-xl font-semibold text-white">{{ workspace?.name }}</h3>
             </div>
 
-            <div class="flex-1 overflow-y-auto p-6 custom-scrollbar">
+            <div class="flex-1 overflow-y-auto p-4 sm:p-6 custom-scrollbar">
                 <!-- Personal: Profile -->
                 @if (activeSection() === 'profile') {
                 <div class="max-w-3xl space-y-4">

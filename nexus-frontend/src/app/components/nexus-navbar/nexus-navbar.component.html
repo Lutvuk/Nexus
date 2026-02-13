@@ -4,9 +4,9 @@
   </div>
 
   <!-- Content -->
-  <div class="relative z-10 flex items-center justify-between w-full">
+  <div class="relative z-10 flex items-center justify-between w-full gap-2">
     <!-- Left: Brand + Nav -->
-    <div class="flex items-center gap-4">
+    <div class="flex items-center gap-2 sm:gap-4 min-w-0">
       <a routerLink="/dashboard" class="flex items-center gap-2 group no-underline">
         <img src="nexus-logo.svg?v=20260213b" class="w-7 h-7 rounded-md shadow-sm" alt="Nexus logo">
         <span
@@ -15,7 +15,7 @@
 
       <!-- Quick Create -->
       <button (click)="onMenuAction('create')"
-        class="h-7 px-3 rounded-md bg-white/[0.08] hover:bg-white/[0.12] text-white/70 hover:text-white text-xs font-medium transition-all flex items-center gap-1.5 border border-white/[0.06]">
+        class="hidden sm:flex h-7 px-3 rounded-md bg-white/[0.08] hover:bg-white/[0.12] text-white/70 hover:text-white text-xs font-medium transition-all items-center gap-1.5 border border-white/[0.06]">
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2">
           <path d="M12 5v14" />
@@ -26,12 +26,12 @@
     </div>
 
     <!-- Right Actions -->
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
       <!-- Help Guide -->
       @if (suggestionsEnabled()) {
       <div class="relative">
         <button (click)="toggleHelpGuide($event)"
-          class="h-8 w-8 flex items-center justify-center rounded-md hover:bg-white/[0.08] text-white/50 hover:text-white transition-all"
+          class="hidden sm:flex h-8 w-8 items-center justify-center rounded-md hover:bg-white/[0.08] text-white/50 hover:text-white transition-all"
           title="Help Guide">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -71,7 +71,7 @@
       <!-- Invitations Badge -->
       @if (pendingInvitationsCount() > 0) {
       <a routerLink="/dashboard"
-        class="h-8 px-2 flex items-center gap-1.5 rounded-md hover:bg-white/[0.08] text-amber-400/80 hover:text-amber-400 transition-all no-underline text-xs font-medium">
+        class="hidden sm:flex h-8 px-2 items-center gap-1.5 rounded-md hover:bg-white/[0.08] text-amber-400/80 hover:text-amber-400 transition-all no-underline text-xs font-medium">
         <span
           class="w-4 h-4 rounded-full bg-amber-500 text-white text-[10px] font-bold flex items-center justify-center">{{
           pendingInvitationsCount() }}</span>
