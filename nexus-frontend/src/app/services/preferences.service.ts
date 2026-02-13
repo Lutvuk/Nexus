@@ -20,7 +20,7 @@ export class PreferencesService {
                 this.preferences.set(null);
                 this.applyToDocument(null);
             }
-        });
+        }, { allowSignalWrites: true });
     }
 
     loadPreferences() {

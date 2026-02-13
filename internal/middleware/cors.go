@@ -10,7 +10,7 @@ func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		allowedOrigin := os.Getenv("CORS_ALLOW_ORIGIN")
 		if allowedOrigin == "" {
-			allowedOrigin = "*"
+			allowedOrigin = "http://localhost:4200"
 		}
 
 		c.Writer.Header().Set("Access-Control-Allow-Origin", allowedOrigin)

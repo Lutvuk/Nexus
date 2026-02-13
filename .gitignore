@@ -1,0 +1,5 @@
+*.exe
+output.txt
+uploads/
+archive/
+.env.compose

@@ -55,7 +55,6 @@ export class NexusNavbarComponent implements OnInit, OnDestroy {
       // Listen for real-time invitation events
       this.wsSub = this.wsService.onEvent<any>('INVITATION_RECEIVED').subscribe({
         next: (payload) => {
-          console.log('[Navbar] Invitation received:', payload);
           // Increment count and show toast
           this.pendingInvitationsCount.update(count => count + 1);
           this.toast.show(`New invitation: ${payload.workspace_name}`, 'info');
@@ -196,3 +195,4 @@ export class NexusNavbarComponent implements OnInit, OnDestroy {
     return toBackendUrl(url);
   }
 }
+

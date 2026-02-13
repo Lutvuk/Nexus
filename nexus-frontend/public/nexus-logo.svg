@@ -1,15 +1,26 @@
 <svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="bg" x1="24" y1="20" x2="232" y2="236" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#0C66E4"/>
-      <stop offset="1" stop-color="#1D7AFC"/>
+    <linearGradient id="nexusBg" x1="24" y1="20" x2="232" y2="236" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0F172A"/>
+      <stop offset="0.55" stop-color="#312E81"/>
+      <stop offset="1" stop-color="#0E7490"/>
     </linearGradient>
-    <linearGradient id="nStroke" x1="74" y1="64" x2="180" y2="192" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#EAF2FF"/>
-      <stop offset="1" stop-color="#FFFFFF"/>
+    <linearGradient id="nexusLink" x1="72" y1="64" x2="184" y2="192" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A5F3FC"/>
+      <stop offset="1" stop-color="#22D3EE"/>
+    </linearGradient>
+    <linearGradient id="nexusNode" x1="62" y1="62" x2="194" y2="194" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#E0F2FE"/>
+      <stop offset="1" stop-color="#BAE6FD"/>
     </linearGradient>
   </defs>
-  <rect x="16" y="16" width="224" height="224" rx="56" fill="url(#bg)"/>
-  <path d="M74 186V70L182 186V70" stroke="url(#nStroke)" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
-  <rect x="34" y="34" width="188" height="188" rx="44" stroke="white" stroke-opacity="0.2" stroke-width="6"/>
+  <rect x="16" y="16" width="224" height="224" rx="56" fill="url(#nexusBg)"/>
+  <path d="M72 76L184 76L72 180L184 180" stroke="url(#nexusLink)" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M72 76L184 180" stroke="#67E8F9" stroke-opacity="0.9" stroke-width="9" stroke-linecap="round"/>
+  <path d="M184 76L72 180" stroke="#67E8F9" stroke-opacity="0.9" stroke-width="9" stroke-linecap="round"/>
+  <circle cx="72" cy="76" r="14" fill="url(#nexusNode)"/>
+  <circle cx="184" cy="76" r="14" fill="url(#nexusNode)"/>
+  <circle cx="72" cy="180" r="14" fill="url(#nexusNode)"/>
+  <circle cx="184" cy="180" r="14" fill="url(#nexusNode)"/>
+  <rect x="34" y="34" width="188" height="188" rx="44" stroke="#A5F3FC" stroke-opacity="0.25" stroke-width="6"/>
 </svg>

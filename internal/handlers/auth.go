@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"nexus-backend/internal/services"
+	"strconv"
 	"strings"
 	"time"
 	"unicode"
@@ -136,6 +137,39 @@ func generateVerificationCode() string {
 	return fmt.Sprintf("%06d", n%1000000)
 }
 
+func sanitizeUsernameBase(input string) string {
+	input = strings.ToLower(strings.TrimSpace(input))
+	var b strings.Builder
+	for _, r := range input {
+		if unicode.IsLetter(r) || unicode.IsDigit(r) || r == '_' || r == '.' {
+			b.WriteRune(r)
+		}
+	}
+	base := strings.Trim(b.String(), "._")
+	if len(base) < 3 {
+		return "user"
+	}
+	return base
+}
+
+func (h *AuthHandler) generateUniqueUsername(email, name string) string {
+	local := strings.TrimSpace(strings.SplitN(email, "@", 2)[0])
+	base := sanitizeUsernameBase(local)
+	if base == "user" && strings.TrimSpace(name) != "" {
+		base = sanitizeUsernameBase(strings.ReplaceAll(name, " ", "_"))
+	}
+
+	candidate := base
+	for i := 1; i <= 9999; i++ {
+		var existing models.User
+		if err := h.DB.Select("id").Where("username = ?", candidate).First(&existing).Error; err != nil {
+			return candidate
+		}
+		candidate = base + strconv.Itoa(i)
+	}
+	return base + strconv.Itoa(int(time.Now().Unix()%100000))
+}
+
 func (h *AuthHandler) resolveEmailVerified(userID uuid.UUID, email string) bool {
 	var verification models.EmailVerification
 	if err := h.DB.Where("user_id = ? AND email = ?", userID, email).First(&verification).Error; err != nil {
@@ -208,6 +242,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		Email:    req.Email,
 		Password: hashedPassword,
 		Name:     req.Name,
+		Username: h.generateUniqueUsername(req.Email, req.Name),
 	}
 
 	// Transaction for atomic creation

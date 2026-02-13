@@ -83,13 +83,11 @@ export class WebSocketService {
             url,
             openObserver: {
                 next: () => {
-                    console.log('WS Connected');
                     this.isConnected.set(true);
                 }
             },
             closeObserver: {
                 next: () => {
-                    console.log('WS Closed');
                     // Only modify state if this socket is still the active one
                     if (this.socket$ === socketSubject) {
                         this.isConnected.set(false);
@@ -119,7 +117,6 @@ export class WebSocketService {
             })
         ).subscribe({
             next: (msg) => {
-                console.log('[WS] Received:', msg);
                 this.messagesSubject.next(msg);
             },
             error: (err) => console.error('WS Subscription Error', err)
@@ -128,10 +125,8 @@ export class WebSocketService {
 
     private attemptReconnect(): void {
         if (this.currentBoardId && !this.socket$) {
-            console.log('[WS] Attempting to reconnect in 2 seconds...');
             setTimeout(() => {
                 if (this.currentBoardId && !this.socket$) {
-                    console.log('[WS] Reconnecting to board:', this.currentBoardId);
                     this.connect(this.currentBoardId);
                 }
             }, 2000);
@@ -160,3 +155,4 @@ export class WebSocketService {
         );
     }
 }
+

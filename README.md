@@ -1,154 +1,170 @@
-# Nexus Board (Trello Clone)
+# Nexus Board
 
-![Nexus Banner](docs/screenshots/dashboard.png)
+Production-oriented Kanban workspace app with realtime collaboration, automation rules, docs notepad, and full Docker deployment.
 
-> **A modern, high-performance Kanban board application for professional project management.**
+## What This Project Includes
+- Go backend API (`Gin` + `GORM` + `PostgreSQL`)
+- Angular 18 frontend (`Signals` + `RxJS` + `Tailwind`)
+- Realtime updates via WebSocket
+- Email-based verification flow (SMTP configurable)
+- Docker Compose stack for local/staging/prod-like runs
 
-![Go](https://img.shields.io/badge/Go-1.23+-00ADD8?style=for-the-badge&logo=go)
-![Angular](https://img.shields.io/badge/Angular-18+-DD0031?style=for-the-badge&logo=angular)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16+-336791?style=for-the-badge&logo=postgresql)
-![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED?style=for-the-badge&logo=docker)
-![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)
-
-## 📌 Overview
-
-Nexus is a robust, production-ready project management tool designed to replicate and extend the core functionality of Trello. Built with a **Clean Architecture** approach in Go and a reactive **Angular** frontend, it delivers real-time collaboration, comprehensive automation, and enterprise-grade security.
-
----
-
-## 📸 Screenshots
-
-| Dashboard | Board View (Kanban) |
-|:---:|:---:|
-| ![Dashboard](docs/screenshots/dashboard.png) | ![Board](docs/screenshots/board_kanban.png) |
-
-| Card Detail | Automation Builder |
-|:---:|:---:|
-| ![Card](docs/screenshots/card_detail.png) | ![Automation](docs/screenshots/rules_builder.png) |
-
----
-
-## 🚀 Features
-
-### Core Functionality
-- **Dynamic Workspaces**: Create unlimited boards and lists.
-- **Drag & Drop**: Smooth, intuitive Kanban interface powered by Angular CDK.
-- **Real-Time Sync**: Instant updates across all devices via WebSockets.
-- **Responsive Design**: Fully optimized for Desktop, Tablet, and Mobile.
-
-### Advanced Features (Tier 2 & 3)
-- **🤖 Butler Automation**: Create natural-language rules (e.g., *"When a card is moved to Done, mark it as complete"*).
-- **📋 Templates System**: Save boards and cards as templates for rapid setup.
-- **🛠️ Custom Fields**: Define text, number, date, dropdown, and checkbox fields for your boards.
-- **🏷️ Rich Metadata**: Labels, Checklists, Due Dates, and Attachments.
-- **🔍 Advanced Search**: Filter boards and cards instantly.
-
-### Engineering Excellence
-- **Security Hardening**: Rate limiting, Secure Headers (HSTS/XSS), and input sanitization.
-- **Performance**: Optimized DB indexing and lazy-loaded modules.
-- **Architecture**: Modular "Hexagonal" architecture for maintainability.
-
----
-
-## 🛠️ Tech Stack
-
-### Backend
-- **Language**: Go (Golang) 1.23+
-- **Framework**: Gin Gonic (HTTP)
-- **Database**: PostgreSQL (GORM ORM)
-- **Real-time**: Gorilla WebSocket
-- **Auth**: JWT (JSON Web Tokens)
-
-### Frontend
-- **Framework**: Angular 18+ (Standalone Components)
-- **Styling**: Tailwind CSS
-- **State Management**: Signals & RxJS
-- **Icons**: Lucide Angular
-
-### DevOps
-- **Containerization**: Docker & Docker Compose
-- **Reverse Proxy**: Nginx (Production)
-
----
-
-## 🏗️ Architecture
-
-Nexus follows a **Clean Architecture** (Hexagonal) pattern to ensure separation of concerns:
-
-```mermaid
-graph TD
-    Client[Angular Client] <--> API[Gin HTTP Layer]
-    API --> Service[Service Layer]
-    Service --> Repo[Repository Layer]
-    Repo --> DB[(PostgreSQL)]
-    
-    subgraph Core Logic
-    Service
-    end
-    
-    subgraph Adapters
-    API
-    Repo
-    end
+## Repository Structure
+```text
+.
+|-- cmd/                          # backend entrypoints
+|-- internal/                     # backend domain + handlers + services + middleware
+|-- nexus-frontend/               # Angular frontend
+|-- docs/                         # product + engineering docs (PRD/FSD/ERD/API/etc)
+|-- tests/                        # integration/scenario tests
+|-- docker-compose.yml            # multi-service runtime
+|-- Dockerfile                    # backend image build
+|-- .env.compose.example          # compose environment template
 ```
 
----
+## Core Features
+- Workspace and board management
+- Kanban columns/cards with drag & drop
+- Labels, checklists, members, due dates, attachments
+- Board settings:
+  - custom fields
+  - background color/image upload
+  - docs notepad (create/edit/save/delete notes)
+- Templates for board/card reuse
+- Automation rules
+- Notifications + inbox
+- Email verification and auth lockout protection
 
-## 🚦 Getting Started
+## Tech Stack
+- Backend: Go `1.24`, Gin, GORM, PostgreSQL, Gorilla WebSocket, JWT
+- Frontend: Angular `18`, Tailwind CSS, ng2-charts, FullCalendar
+- Infra: Docker, Docker Compose, Nginx (frontend container), Mailpit (local SMTP)
 
-### Option 1: Docker (Recommended)
+## Prerequisites
+- Docker Desktop (or Docker Engine + Compose plugin)
+- For local non-Docker frontend dev: Node.js 20+
+- For local non-Docker backend dev: Go 1.24+
 
-Get the full stack running in minutes.
+## Quick Start (Recommended: Docker)
 
+1. Create runtime env:
 ```bash
-# 1. Clone the repo
-git clone https://github.com/yourusername/nexus-board.git
-cd nexus-board
-
-# 2. Start services
-docker-compose up --build
+cp .env.compose.example .env.compose
 ```
 
-Access the app at `http://localhost`.
-Mail testing inbox (for notifications/marketing emails) is available at `http://localhost:8025`.
+2. Edit `.env.compose`:
+- Set strong values for:
+  - `POSTGRES_PASSWORD`
+  - `JWT_SECRET`
+- Set frontend origin:
+  - `CORS_ALLOW_ORIGIN=http://localhost` (local)
+- Set SMTP:
+  - Local capture: Mailpit defaults
+  - Real mail: provider SMTP values
 
-### Option 2: Manual Setup
-
-**Backend**
+3. Build and run:
 ```bash
-cd personal-assessment
-cp .env.example .env
-# Edit .env with your DB credentials
+docker compose --env-file .env.compose up --build -d
+```
+
+4. Verify:
+- UI: `http://localhost`
+- API health: `http://localhost:8080/health`
+- Mailpit UI (if used): `http://localhost:8025`
+
+5. Stop:
+```bash
+docker compose --env-file .env.compose down
+```
+
+## Environment Variables (`.env.compose`)
+
+Required:
+- `POSTGRES_USER`
+- `POSTGRES_PASSWORD`
+- `POSTGRES_DB`
+- `JWT_SECRET`
+- `CORS_ALLOW_ORIGIN`
+
+SMTP:
+- `SMTP_HOST`
+- `SMTP_PORT`
+- `SMTP_USERNAME`
+- `SMTP_PASSWORD`
+- `SMTP_FROM`
+
+Reference template: `.env.compose.example`
+
+## Real SMTP Setup (Example)
+- Host: `smtp.gmail.com`
+- Port: `587`
+- Username: your Gmail address
+- Password: Gmail App Password
+- From: verified sender email
+
+After changing SMTP values:
+```bash
+docker compose --env-file .env.compose up -d --build nexus-api
+```
+
+## Local Development Without Docker
+
+Backend:
+```bash
+go mod tidy
 go run cmd/server/main.go
 ```
 
-**Frontend**
+Frontend:
 ```bash
 cd nexus-frontend
-npm install
+npm ci
 npm start
 ```
 
-### Email Testing (Free, local)
-
-To enable real SMTP delivery locally (without paid provider), run Mailpit:
-
+## Testing and Build
+- Backend tests:
 ```bash
-docker run --rm -p 1025:1025 -p 8025:8025 axllent/mailpit:latest
+go test ./...
 ```
 
-Then ensure `.env` contains:
-
-```env
-SMTP_HOST=localhost
-SMTP_PORT=1025
-SMTP_FROM=no-reply@nexus.local
+- Frontend production build:
+```bash
+cd nexus-frontend
+npm run build
 ```
 
-Open `http://localhost:8025` to view captured emails.
+## Deployment Notes
+- Do not use placeholder secrets in production.
+- Restrict `CORS_ALLOW_ORIGIN` to your exact frontend domain.
+- Keep `.env.compose` out of version control.
+- Use HTTPS and reverse proxy in production.
 
----
+Detailed checklist: `docs/11-Deployment-Checklist.md`
 
-## 📜 License
+## Main API Surface
+- Auth: `/auth/register`, `/auth/verify-email`, `/auth/login`, `/auth/resend-verification`
+- API base: `/api/v1/...` (boards, cards, columns, workspaces, notifications, etc.)
+- Realtime: `/ws`
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Known Operational Tips
+- If browser still shows old logo/UI after deploy:
+  - hard refresh (`Ctrl+F5`) once
+- If Docker fails to build after interruption:
+  - rerun `docker compose ... up --build -d`
+
+## Project Documentation
+Complete docs are under `docs/`:
+- Product Brief
+- PRD
+- FSD
+- ERD
+- API Contract
+- UI Wireframes
+- Design System
+- TDD
+- Epics
+- Stories
+
+## License
+Internal assessment project. Add your preferred license if needed.

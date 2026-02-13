@@ -350,7 +350,6 @@ export class NexusBoardComponent implements OnInit, OnDestroy {
     // Connect WebSocket
     this.wsService.connect(id);
     const wsSub = this.wsService.onEvent('CARD_MOVED').subscribe((data) => {
-      console.log('[Board] Received CARD_MOVED:', data, 'isDragging:', this.isDragging);
       setTimeout(() => this.refreshTrigger$.next(id), 150);
       if (this.showArchivedSidebar()) {
         setTimeout(() => this.loadArchivedCards(), 200);
@@ -380,7 +379,6 @@ export class NexusBoardComponent implements OnInit, OnDestroy {
 
     // Listen for card creation (including from templates)
     const cardCreateSub = this.wsService.onEvent('CARD_CREATED').subscribe((data) => {
-      console.log('[Board] Received CARD_CREATED:', data);
       this.refreshTrigger$.next(id);
       if (this.showArchivedSidebar()) {
         setTimeout(() => this.loadArchivedCards(), 200);
@@ -390,14 +388,12 @@ export class NexusBoardComponent implements OnInit, OnDestroy {
 
     // Listen for template list updates
     const templatesUpdateSub = this.wsService.onEvent('TEMPLATES_UPDATED').subscribe((data) => {
-      console.log('[Board] Received TEMPLATES_UPDATED:', data);
       this.loadCardTemplates(id);
     });
     this.subscriptions.add(templatesUpdateSub);
 
     // Listen for generic card updates (Label, Member, Checklist, Details)
     const cardUpdateSub = this.wsService.onEvent('CARD_UPDATED').subscribe((data) => {
-      console.log('[Board] Received CARD_UPDATED:', data);
       this.refreshTrigger$.next(id);
       if (this.showArchivedSidebar()) {
         setTimeout(() => this.loadArchivedCards(), 200);
@@ -414,7 +410,6 @@ export class NexusBoardComponent implements OnInit, OnDestroy {
 
     // Listen for same-session refresh (e.g., when card detail modal closes)
     const refreshNeededSub = this.boardService.refreshNeeded$.subscribe(() => {
-      console.log('[Board] Received refreshNeeded, refreshing board:', id);
       this.refreshBoard(id);  // Direct call, bypass debounce
     });
     this.subscriptions.add(refreshNeededSub);
@@ -448,9 +443,7 @@ export class NexusBoardComponent implements OnInit, OnDestroy {
   }
 
   refreshBoard(id: string) {
-    console.log('[Board] refreshBoard called for:', id, 'isDragging:', this.isDragging);
     this.boardService.getBoardById(id).subscribe(data => {
-      console.log('[Board] refreshBoard got data, columns:', data.columns?.length, 'cards:', data.columns?.map((c: any) => c.cards?.length));
       this.board.set({ ...data.board, columns: data.columns });
       this.boardService.userRole.set(data.user_role);
     });
@@ -748,3 +741,4 @@ export class NexusBoardComponent implements OnInit, OnDestroy {
     this.wsService.disconnect();
   }
 }
+

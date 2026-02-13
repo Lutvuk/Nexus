@@ -27,7 +27,6 @@ export class NotificationService {
 
     private listenToWebSockets() {
         this.wsService.onEvent('NOTIFICATION_RECEIVED').subscribe((notification: any) => {
-            console.log('[NotificationService] Real-time note received:', notification);
             const normalized = this.normalizeNotification(notification);
             this.maybeShowDesktopNotification(normalized);
             this.loadNotifications(this.getEffectiveWorkspaceId());
@@ -115,3 +114,4 @@ export class NotificationService {
         return toBackendUrl(avatarUrl);
     }
 }
+

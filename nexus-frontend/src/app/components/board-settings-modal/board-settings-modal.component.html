@@ -16,18 +16,27 @@
 
         <!-- Tabs -->
         <div class="flex items-center gap-1 p-1 mx-6 mt-4 bg-white/5 rounded-xl">
-            <button (click)="activeTab = 'general'" [class.bg-white_10]="activeTab === 'general'"
-                [class.text-white]="activeTab === 'general'" [class.text-white_50]="activeTab !== 'general'"
+            <button (click)="activeTab = 'general'"
+                [ngClass]="{
+                    'bg-white/10 text-white': activeTab === 'general',
+                    'text-white/50': activeTab !== 'general'
+                }"
                 class="flex-1 py-1.5 text-sm font-medium rounded-lg transition-all">
                 General
             </button>
-            <button (click)="activeTab = 'fields'" [class.bg-white_10]="activeTab === 'fields'"
-                [class.text-white]="activeTab === 'fields'" [class.text-white_50]="activeTab !== 'fields'"
+            <button (click)="activeTab = 'fields'"
+                [ngClass]="{
+                    'bg-white/10 text-white': activeTab === 'fields',
+                    'text-white/50': activeTab !== 'fields'
+                }"
                 class="flex-1 py-1.5 text-sm font-medium rounded-lg transition-all">
                 Custom Fields
             </button>
-            <button (click)="activeTab = 'docs'" [class.bg-white_10]="activeTab === 'docs'"
-                [class.text-white]="activeTab === 'docs'" [class.text-white_50]="activeTab !== 'docs'"
+            <button (click)="activeTab = 'docs'"
+                [ngClass]="{
+                    'bg-white/10 text-white': activeTab === 'docs',
+                    'text-white/50': activeTab !== 'docs'
+                }"
                 class="flex-1 py-1.5 text-sm font-medium rounded-lg transition-all">
                 Docs Notepad
             </button>
@@ -67,13 +76,15 @@
                         }
                     </div>
 
-                    <div class="mt-4 space-y-2">
-                        <label class="text-xs font-medium text-white/50">Upload background image</label>
-                        <label class="inline-flex items-center gap-2 px-3 h-9 rounded-lg bg-white/5 border border-white/10 text-white text-sm hover:bg-white/10 transition-all cursor-pointer">
-                            <span>{{ uploadingBackground ? 'Uploading...' : 'Choose image' }}</span>
-                            <input type="file" accept="image/png,image/jpeg,image/webp" class="hidden"
-                                (change)="onBackgroundSelected($event)">
-                        </label>
+                    <div class="mt-5">
+                        <label class="block text-xs font-medium text-white/50">Upload background image</label>
+                        <div class="mt-2.5">
+                            <label class="inline-flex items-center gap-2 px-4 h-10 rounded-lg bg-white/5 border border-white/10 text-white text-sm hover:bg-white/10 transition-all cursor-pointer">
+                                <span>{{ uploadingBackground ? 'Uploading...' : 'Choose image' }}</span>
+                                <input type="file" accept="image/png,image/jpeg,image/webp" class="hidden"
+                                    (change)="onBackgroundSelected($event)">
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -119,7 +130,7 @@
                             }
                         </div>
 
-                        <div class="rounded-lg border border-white/10 bg-slate-950/40 p-4 flex flex-col gap-3">
+                        <div class="rounded-lg border border-white/10 bg-slate-950/40 p-4 grid grid-rows-[auto_minmax(0,1fr)_auto] gap-3 min-h-[420px]">
                             @if (!hasSelectedNote()) {
                             <div class="h-full flex items-center justify-center text-sm text-white/40">
                                 Select a note or create a new one.
@@ -131,19 +142,19 @@
                                     class="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500 transition-all">
                             </div>
 
-                            <div class="space-y-2 flex-1 min-h-[240px]">
+                            <div class="space-y-2 min-h-0 flex flex-col">
                                 <label class="text-xs font-medium text-white/60">Content</label>
                                 <textarea [(ngModel)]="noteContent"
-                                    class="w-full h-full min-h-[240px] p-3 rounded-lg bg-white/5 border border-white/10 text-white/90 text-sm leading-relaxed resize-none focus:outline-none focus:border-cyan-500 transition-all"
+                                    class="w-full flex-1 min-h-[220px] p-3 rounded-lg bg-white/5 border border-white/10 text-white/90 text-sm leading-relaxed resize-y focus:outline-none focus:border-cyan-500 transition-all"
                                     placeholder="Write meeting notes, architecture decisions, API snippets, or anything your team needs."></textarea>
                             </div>
 
-                            <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+                            <div class="pt-3 border-t border-white/10 space-y-2">
                                 <p class="text-[11px] text-white/40">
                                     Last update:
                                     <span class="text-white/55">{{ getSelectedNoteUpdatedAt() | date:'MMM d, y h:mm a' }}</span>
                                 </p>
-                                <div class="flex items-center gap-2">
+                                <div class="flex items-center justify-end gap-2">
                                     <button (click)="deleteCurrentNote()"
                                         [disabled]="isSavingNote"
                                         class="px-3 h-9 rounded-lg bg-red-500/15 hover:bg-red-500/25 disabled:opacity-60 disabled:cursor-not-allowed text-red-300 text-sm transition-all">

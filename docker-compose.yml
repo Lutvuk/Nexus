@@ -5,10 +5,12 @@ services:
     image: postgres:15-alpine
     container_name: nexus-db
     restart: always
+    env_file:
+      - .env.compose
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: nexus
-      POSTGRES_DB: nexus
+      POSTGRES_USER: ${POSTGRES_USER:-nexus_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in your environment}
+      POSTGRES_DB: ${POSTGRES_DB:-nexus}
     ports:
       - "5432:5432"
     volumes:
@@ -20,15 +22,19 @@ services:
       dockerfile: Dockerfile
     container_name: nexus-api
     restart: always
+    env_file:
+      - .env.compose
     ports:
       - "8080:8080"
     environment:
-      POSTGRES_URL: "host=nexus-db user=postgres password=nexus dbname=nexus port=5432 sslmode=disable"
-      SMTP_HOST: "mailpit"
-      SMTP_PORT: "1025"
-      SMTP_USERNAME: ""
-      SMTP_PASSWORD: ""
-      SMTP_FROM: "no-reply@nexus.local"
+      POSTGRES_URL: "host=nexus-db user=${POSTGRES_USER:-nexus_user} password=${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in your environment} dbname=${POSTGRES_DB:-nexus} port=5432 sslmode=disable"
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in your environment}
+      CORS_ALLOW_ORIGIN: ${CORS_ALLOW_ORIGIN:?Set CORS_ALLOW_ORIGIN in your environment}
+      SMTP_HOST: ${SMTP_HOST:-nexus-mailpit}
+      SMTP_PORT: ${SMTP_PORT:-1025}
+      SMTP_USERNAME: ${SMTP_USERNAME:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM: ${SMTP_FROM:-no-reply@nexus.local}
     depends_on:
       - nexus-db
       - nexus-mailpit

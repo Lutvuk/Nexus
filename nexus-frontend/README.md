@@ -1,27 +1,101 @@
-# NexusFrontend
+# Nexus Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.21.
+Angular 18 single-page app for Nexus Board.
 
-## Development server
+## Stack
+- Angular `18.x` (standalone components)
+- Signals + RxJS
+- Tailwind CSS
+- ng2-charts / Chart.js
+- FullCalendar
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Folder Highlights
+```text
+src/
+|-- app/
+|   |-- auth/                     # login/register/verify flow
+|   |-- components/               # board, modals, settings, dashboards
+|   |-- services/                 # auth, board, websocket, notifications, prefs
+|   |-- core/runtime-config.ts    # backend URL detection
+|-- assets/
+|-- styles.css
+public/
+|-- nexus-logo.svg
+```
 
-## Code scaffolding
+## Scripts
+```bash
+npm start        # ng serve (http://localhost:4200)
+npm run build    # production build
+npm test         # unit tests
+```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Install and Run
+```bash
+npm ci
+npm start
+```
 
-## Build
+## Runtime Backend URL
+Frontend resolves backend base URL using:
+1. `window.__NEXUS_BACKEND_URL__` (if provided)
+2. `import.meta.env.NG_APP_BACKEND_URL`
+3. default:
+   - `http://localhost:8080` when on localhost
+   - `window.location.origin` otherwise
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Code reference: `src/app/core/runtime-config.ts`
 
-## Running unit tests
+## Production Build
+```bash
+npm run build
+```
+Output:
+```text
+dist/nexus-frontend/browser
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Docker Integration
+This frontend is served by Nginx in Docker.
 
-## Running end-to-end tests
+From repo root:
+```bash
+docker compose --env-file .env.compose up --build -d nexus-ui
+```
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+Served at:
+- `http://localhost`
 
-## Further help
+## Major UI Modules
+- Board canvas + drag/drop
+- Board settings (general, custom fields, docs notepad)
+- Card detail modal (attachments, checklist, labels, members, comments)
+- Workspace settings
+- Notification dropdown/inbox
+- Analytics and planner views
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Auth Flow (Frontend)
+- Register -> waits for verification code
+- Verify email -> token stored in localStorage
+- Login -> JWT decode and session restore
+
+Primary files:
+- `src/app/services/auth.service.ts`
+- `src/app/auth/login/login.component.ts`
+- `src/app/auth/register/register.component.ts`
+
+## Troubleshooting
+- Old logo/style after deploy:
+  - hard refresh (`Ctrl+F5`)
+- API requests blocked:
+  - confirm backend `CORS_ALLOW_ORIGIN` matches browser origin exactly
+- Build errors:
+  - remove `node_modules` + reinstall:
+```bash
+rm -rf node_modules package-lock.json
+npm install
+```
+
+## Notes
+- Avoid committing secrets to frontend code.
+- Keep API host configuration in runtime env or compose-level routing.

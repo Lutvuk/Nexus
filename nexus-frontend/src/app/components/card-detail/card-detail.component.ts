@@ -1240,17 +1240,13 @@ export class CardDetailComponent implements OnInit, OnDestroy, OnChanges {
     this.subscriptions.add(routeSub);
 
     // Debug: Log connection status
-    console.log('[CardDetail] WebSocket connected:', this.wsService.isConnected());
 
     // Real-Time Sync: Listen for generic card updates
     const wsSub = this.wsService.onEvent('CARD_UPDATED').subscribe((data: any) => {
       const currentCard = this.card();
-      console.log('[CardDetail] Received CARD_UPDATED event. Data:', data, 'Current card ID:', currentCard?.id);
       if (currentCard && data?.card_id === currentCard.id) {
-        console.log('[CardDetail] Card ID matches! Reloading card:', data.card_id);
         this.loadCard(currentCard.id, true);
       } else {
-        console.log('[CardDetail] Card ID mismatch or no current card. Ignoring event.');
       }
     });
     this.subscriptions.add(wsSub);
@@ -2018,6 +2014,7 @@ export class CardDetailComponent implements OnInit, OnDestroy, OnChanges {
     this.subscriptions.unsubscribe();
   }
 }
+
 
 
 

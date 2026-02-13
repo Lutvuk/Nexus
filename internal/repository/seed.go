@@ -11,76 +11,9 @@ import (
 )
 
 func SeedData(db *gorm.DB) {
+	// Demo column/card seed previously inserted orphan columns without a board FK.
+	// Keep startup seeding limited to reusable board templates.
 	SeedTemplates(db)
-	var count int64
-	db.Model(&models.Column{}).Count(&count)
-	if count > 0 {
-		return
-	}
-
-	log.Println("Seeding database...")
-
-	// Fixed UUIDs as per stories.md
-	planID := uuid.MustParse("00000000-0000-0000-0000-000000000001")
-	progressID := uuid.MustParse("00000000-0000-0000-0000-000000000002")
-	completeID := uuid.MustParse("00000000-0000-0000-0000-000000000003")
-
-	columns := []models.Column{
-		{ID: planID, Name: "Plan", Position: 16384.0},
-		{ID: progressID, Name: "Progress", Position: 32768.0},
-		{ID: completeID, Name: "Complete", Position: 49152.0},
-	}
-
-	if err := db.Create(&columns).Error; err != nil {
-		log.Printf("Error seeding columns: %v", err)
-		return
-	}
-
-	cards := []models.Card{
-		{
-			Title:       "Design glassmorphism UI",
-			Description: "Purple theme #8B5CF6 + backdrop blur",
-			ColumnID:    planID,
-			Position:    16384.0,
-		},
-		{
-			Title:       "Setup Angular CDK",
-			Description: "DragDropModule + connected lists",
-			ColumnID:    planID,
-			Position:    32768.0,
-		},
-		{
-			Title:       "Go Gin backend",
-			Description: "REST API + GORM transactions",
-			ColumnID:    progressID,
-			Position:    16384.0,
-		},
-		{
-			Title:       "Docker compose",
-			Description: "Postgres + Go API local dev",
-			ColumnID:    completeID,
-			Position:    16384.0,
-		},
-		{
-			Title:       "PRD & FSD documentation",
-			Description: "Full technical specification",
-			ColumnID:    completeID,
-			Position:    32768.0,
-		},
-		{
-			Title:       "ERD & API Contract",
-			Description: "Database and endpoint design",
-			ColumnID:    completeID,
-			Position:    49152.0,
-		},
-	}
-
-	if err := db.Create(&cards).Error; err != nil {
-		log.Printf("Error seeding cards: %v", err)
-		return
-	}
-
-	log.Println("Seeding complete")
 }
 
 func SeedTemplates(db *gorm.DB) {

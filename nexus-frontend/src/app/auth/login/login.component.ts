@@ -15,7 +15,7 @@ import { AuthService } from '../../services/auth.service';
 
       <div class="relative w-full max-w-md p-8 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl">
         <div class="flex items-center justify-center gap-3 mb-5">
-          <img src="nexus-logo.svg" alt="Nexus logo" class="w-9 h-9 rounded-lg">
+          <img src="nexus-logo.svg?v=20260213b" alt="Nexus logo" class="w-9 h-9 rounded-lg">
           <span class="text-lg font-bold text-white tracking-tight">Nexus</span>
         </div>
 

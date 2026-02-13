@@ -33,6 +33,7 @@ export class BoardSettingsModalComponent {
     noteTitle = '';
     noteContent = '';
     isSavingNote = false;
+    private readonly localFallbackPrefix = 'nexus_board_docs_notes_';
 
     private boardService = inject(BoardService);
     private toast = inject(ToastService);
@@ -152,24 +153,18 @@ export class BoardSettingsModalComponent {
     }
 
     private applyIncomingNotes(raw?: string) {
-        if (!raw) {
-            this.notes = [];
-            this.selectedNoteId = null;
-            this.noteTitle = '';
-            this.noteContent = '';
-            return;
+        let nextNotes: BoardDocumentationNote[] = [];
+        const fallbackRaw = this.readLocalFallback();
+
+        if (raw) {
+            nextNotes = this.parseNotes(raw);
         }
 
-        try {
-            const parsed = JSON.parse(raw) as BoardDocumentationNote[];
-            this.notes = Array.isArray(parsed)
-                ? parsed
-                    .filter(n => n && typeof n.id === 'string')
-                    .sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''))
-                : [];
-        } catch {
-            this.notes = [];
+        if (nextNotes.length === 0 && fallbackRaw) {
+            nextNotes = this.parseNotes(fallbackRaw);
         }
+
+        this.notes = nextNotes;
 
         if (this.notes.length > 0) {
             this.selectNote(this.notes[0].id);
@@ -181,7 +176,12 @@ export class BoardSettingsModalComponent {
     }
 
     private persistNotes(successMessage: string) {
-        if (!this.boardId) return;
+        this.writeLocalFallback(JSON.stringify(this.notes));
+        if (!this.boardId) {
+            this.toast.show(successMessage, 'success');
+            return;
+        }
+
         this.isSavingNote = true;
         this.boardService.updateBoard(this.boardId, {
             documentation_notes: JSON.stringify(this.notes)
@@ -193,9 +193,35 @@ export class BoardSettingsModalComponent {
             },
             error: () => {
                 this.isSavingNote = false;
-                this.toast.show('Failed to save note changes', 'error');
+                this.toast.show('Saved locally. Server sync failed.', 'info');
             }
         });
+    }
+
+    private parseNotes(raw: string): BoardDocumentationNote[] {
+        try {
+            const parsed = JSON.parse(raw) as BoardDocumentationNote[];
+            if (!Array.isArray(parsed)) return [];
+            return parsed
+                .filter(n => n && typeof n.id === 'string')
+                .sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''));
+        } catch {
+            return [];
+        }
+    }
+
+    private localFallbackKey(): string {
+        return `${this.localFallbackPrefix}${this.boardId}`;
+    }
+
+    private readLocalFallback(): string | null {
+        if (!this.boardId) return null;
+        return localStorage.getItem(this.localFallbackKey());
+    }
+
+    private writeLocalFallback(raw: string) {
+        if (!this.boardId) return;
+        localStorage.setItem(this.localFallbackKey(), raw);
     }
 }
 
