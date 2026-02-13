@@ -77,7 +77,7 @@
             <app-view-switcher [currentView]="currentView()"
                 (viewChanged)="currentView.set($event)"></app-view-switcher>
             <button (click)="openBoardSettings()"
-                class="nexus-topbar-btn px-2 sm:px-3 shrink-0"
+                class="nexus-topbar-btn h-8 !px-2 text-[11px] px-2 sm:px-3 shrink-0"
                 title="Board Settings">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -89,7 +89,7 @@
             </button>
 
             <button (click)="toggleArchivedSidebar()"
-                class="nexus-topbar-btn hover:text-amber-300 px-2 sm:px-3 shrink-0"
+                class="nexus-topbar-btn h-8 !px-2 text-[11px] hover:text-amber-300 px-2 sm:px-3 shrink-0"
                 title="Archived Items">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -100,7 +100,7 @@
                 <span class="hidden md:inline font-medium">Archived</span>
             </button>
             <button (click)="toggleActivitySidebar()"
-                class="nexus-topbar-btn hover:text-violet-300 px-2 sm:px-3 shrink-0"
+                class="nexus-topbar-btn h-8 !px-2 text-[11px] hover:text-violet-300 px-2 sm:px-3 shrink-0"
                 title="Board Activity">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2">
@@ -109,7 +109,7 @@
                 <span class="hidden md:inline font-medium">Board Activity</span>
             </button>
             <button (click)="openShareModal()"
-                class="nexus-topbar-btn nexus-topbar-btn-primary shadow-lg shadow-violet-500/20 px-2 sm:px-3 shrink-0">
+                class="nexus-topbar-btn nexus-topbar-btn-primary h-8 !px-2 text-[11px] shadow-lg shadow-violet-500/20 px-2 sm:px-3 shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2">
                     <circle cx="18" cy="5" r="3" />
