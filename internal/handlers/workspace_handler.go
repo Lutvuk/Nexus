@@ -699,7 +699,13 @@ func (h *WorkspaceHandler) GetInviteLink(c *gin.Context) {
 
 	var inviteLink models.InviteLink
 	if err := h.DB.Where("workspace_id = ?", workspaceID).First(&inviteLink).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "No invite link found"})
+		// No link yet is a valid state; return empty payload so frontend can render cleanly.
+		c.JSON(http.StatusOK, gin.H{
+			"token":      "",
+			"link":       "",
+			"uses_count": 0,
+			"max_uses":   0,
+		})
 		return
 	}
 

@@ -107,19 +107,16 @@ export class WebSocketService {
         this.socket$.pipe(
             retryWhen(errors =>
                 errors.pipe(
-                    tap(err => console.error('WS Error, retrying...', err)),
+                    tap(() => { }),
                     delayWhen(() => timer(3000)) // Retry every 3 seconds
                 )
             ),
-            catchError(err => {
-                console.error('WS Fatal Error', err);
-                return EMPTY;
-            })
+            catchError(() => EMPTY)
         ).subscribe({
             next: (msg) => {
                 this.messagesSubject.next(msg);
             },
-            error: (err) => console.error('WS Subscription Error', err)
+            error: () => { }
         });
     }
 
