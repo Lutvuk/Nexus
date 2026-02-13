@@ -3,7 +3,7 @@
 
     <!-- Board Header Bar -->
     <div
-        class="flex flex-wrap items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 flex-shrink-0 bg-black/40 backdrop-blur-md border-b border-white/5 z-10">
+        class="flex flex-col gap-2 px-3 sm:px-4 py-2 flex-shrink-0 bg-black/40 backdrop-blur-md border-b border-white/5 z-10">
         @if (board(); as data) {
         <div class="flex items-center gap-2 sm:gap-3 h-9 min-w-0">
             <h2 class="text-base sm:text-lg font-bold text-white truncate max-w-[60vw] sm:max-w-none shadow-black drop-shadow-md">{{ data.title }}</h2>
@@ -21,7 +21,7 @@
         }
 
         <!-- Search & Filter Area -->
-        <div class="order-3 w-full sm:order-none sm:w-auto sm:flex-1 flex items-center gap-2 sm:gap-3 h-9">
+        <div class="flex items-center gap-2 sm:gap-3 h-9 w-full overflow-x-auto lg:overflow-visible pb-1 lg:pb-0 custom-scrollbar">
             <div class="relative group max-w-sm w-full">
                 <input #searchInput type="text" [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)"
                     placeholder="Search cards..."
@@ -38,7 +38,7 @@
             </div>
 
             <button (click)="toggleFilterDropdown()"
-                class="nexus-topbar-btn relative px-2 sm:px-3"
+                class="nexus-topbar-btn relative px-2 sm:px-3 shrink-0"
                 [class.border-violet-500]="hasActiveFilters()" [class.bg-violet-500_10]="hasActiveFilters()">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -65,7 +65,7 @@
             </button>
 
             <button (click)="toggleAutomationRules()"
-                class="nexus-topbar-btn px-2 sm:px-3">
+                class="nexus-topbar-btn px-2 sm:px-3 shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
@@ -74,15 +74,10 @@
             </button>
 
             <!-- View Switcher -->
-            <div class="shrink-0">
             <app-view-switcher [currentView]="currentView()"
                 (viewChanged)="currentView.set($event)"></app-view-switcher>
-            </div>
-        </div>
-
-        <div class="ml-auto flex items-center gap-1.5 sm:gap-2 h-9 flex-wrap justify-end">
             <button (click)="openBoardSettings()"
-                class="nexus-topbar-btn px-2 sm:px-3"
+                class="nexus-topbar-btn px-2 sm:px-3 shrink-0"
                 title="Board Settings">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -94,7 +89,7 @@
             </button>
 
             <button (click)="toggleArchivedSidebar()"
-                class="nexus-topbar-btn hover:text-amber-300 px-2 sm:px-3"
+                class="nexus-topbar-btn hover:text-amber-300 px-2 sm:px-3 shrink-0"
                 title="Archived Items">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -105,7 +100,7 @@
                 <span class="hidden md:inline font-medium">Archived</span>
             </button>
             <button (click)="toggleActivitySidebar()"
-                class="nexus-topbar-btn hover:text-violet-300 px-2 sm:px-3"
+                class="nexus-topbar-btn hover:text-violet-300 px-2 sm:px-3 shrink-0"
                 title="Board Activity">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2">
@@ -114,7 +109,7 @@
                 <span class="hidden md:inline font-medium">Board Activity</span>
             </button>
             <button (click)="openShareModal()"
-                class="nexus-topbar-btn nexus-topbar-btn-primary shadow-lg shadow-violet-500/20 px-2 sm:px-3">
+                class="nexus-topbar-btn nexus-topbar-btn-primary shadow-lg shadow-violet-500/20 px-2 sm:px-3 shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2">
                     <circle cx="18" cy="5" r="3" />
