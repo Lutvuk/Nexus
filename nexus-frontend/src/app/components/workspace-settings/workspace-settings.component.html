@@ -1,8 +1,8 @@
-<div class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm p-4 md:p-6" (click)="close.emit()">
-    <div class="mx-auto h-full max-h-[92vh] md:max-h-[860px] w-full max-w-6xl rounded-2xl nexus-panel-shell overflow-hidden flex flex-col lg:flex-row"
+<div class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm p-0 sm:p-4 md:p-6" (click)="close.emit()">
+    <div class="mx-auto h-full max-h-[100vh] sm:max-h-[92vh] md:max-h-[860px] w-full max-w-6xl rounded-none sm:rounded-2xl nexus-panel-shell overflow-hidden flex flex-col lg:flex-row"
         (click)="$event.stopPropagation()">
         <!-- Sidebar -->
-        <aside class="w-full lg:w-[260px] shrink-0 border-b lg:border-b-0 lg:border-r border-white/10 bg-black/20 p-3 sm:p-4 max-h-[40vh] lg:max-h-none overflow-y-auto">
+        <aside class="hidden lg:block w-[260px] shrink-0 border-r border-white/10 bg-black/20 p-4 overflow-y-auto">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-lg font-bold text-white">Workspace Settings</h2>
                 <button (click)="close.emit()" class="nexus-icon-btn" aria-label="Close workspace settings">
@@ -27,7 +27,7 @@
             </div>
 
             <div class="text-xs uppercase tracking-wider text-white/35 mb-2">Personal Settings</div>
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-1 gap-1 mb-4">
+            <div class="grid grid-cols-1 gap-1 mb-4">
                 <button (click)="activeSection.set('profile')"
                     class="w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors"
                     [ngClass]="activeSection() === 'profile' ? 'bg-violet-600/20 border border-violet-500/40 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'">
@@ -46,7 +46,7 @@
             </div>
 
             <div class="text-xs uppercase tracking-wider text-white/35 mb-2">Workspace</div>
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-1 gap-1">
+            <div class="grid grid-cols-1 gap-1">
                 <button (click)="activeSection.set('general')"
                     class="w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors"
                     [ngClass]="activeSection() === 'general' ? 'bg-violet-600/20 border border-violet-500/40 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'">
@@ -72,8 +72,34 @@
 
         <!-- Content -->
         <section class="flex-1 min-w-0 flex flex-col">
-            <div class="px-4 sm:px-6 py-4 border-b border-white/10 bg-white/[0.02]">
-                <h3 class="text-xl font-semibold text-white">{{ workspace?.name }}</h3>
+            <div class="px-4 sm:px-6 py-4 border-b border-white/10 bg-white/[0.02] space-y-3 lg:space-y-0">
+                <div class="flex items-center justify-between gap-3">
+                    <h3 class="text-base sm:text-xl font-semibold text-white truncate">{{ workspace?.name }}</h3>
+                    <button (click)="close.emit()" class="lg:hidden nexus-icon-btn" aria-label="Close workspace settings">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 6 6 18"></path>
+                            <path d="m6 6 12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <select [ngModel]="activeSection()" (ngModelChange)="activeSection.set($event)"
+                        class="nexus-field w-full text-sm appearance-none">
+                        <option value="profile" class="bg-slate-900 text-white">Profile and Visibility</option>
+                        <option value="activity" class="bg-slate-900 text-white">Activity</option>
+                        <option value="account" class="bg-slate-900 text-white">Settings</option>
+                        <option value="general" class="bg-slate-900 text-white">General</option>
+                        <option value="members" class="bg-slate-900 text-white">Members</option>
+                        <option value="requests" class="bg-slate-900 text-white">Join Requests</option>
+                        <option value="invite" class="bg-slate-900 text-white">Invite Link</option>
+                    </select>
+                    <select [ngModel]="workspace?.id" (ngModelChange)="onWorkspaceSelected($event)"
+                        class="nexus-field w-full text-sm appearance-none">
+                        @for (ws of workspaces(); track ws.id) {
+                        <option [value]="ws.id" class="bg-slate-900 text-white">{{ ws.name }}</option>
+                        }
+                    </select>
+                </div>
             </div>
 
             <div class="flex-1 overflow-y-auto p-4 sm:p-6 custom-scrollbar">
