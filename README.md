@@ -155,16 +155,6 @@ Detailed checklist: `docs/11-Deployment-Checklist.md`
 
 ## Project Documentation
 Complete docs are under `docs/`:
-- Product Brief
-- PRD
-- FSD
-- ERD
-- API Contract
-- UI Wireframes
-- Design System
-- TDD
-- Epics
-- Stories
 
 ## License
 Internal assessment project. Add your preferred license if needed.
