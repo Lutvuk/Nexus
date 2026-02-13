@@ -9,8 +9,9 @@ import (
 
 type Column struct {
 	ID        uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
+	BoardID   uuid.UUID `gorm:"type:uuid;index" json:"board_id"` // Link to Board
 	Name      string    `gorm:"type:varchar(100);not null" json:"name"`
-	Position  int       `gorm:"not null;unique" json:"position"`
+	Position  float64   `gorm:"not null" json:"position"`
 	Cards     []Card    `gorm:"foreignKey:ColumnID;constraint:OnDelete:CASCADE" json:"cards"`
 	CardCount int       `gorm:"-" json:"card_count"` // Computed field
 	CreatedAt time.Time `json:"created_at"`

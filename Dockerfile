@@ -19,14 +19,20 @@ RUN go mod tidy
 # RUN go test -v nexus-backend/internal/services > test_output.txt 2>&1 || { grep "Duplicate Insert" test_output.txt; grep "SameColumn Error" test_output.txt; grep "FAIL" test_output.txt; exit 1; }
 
 # Build the application
-RUN go build -o nexus-backend cmd/server/main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o nexus-backend cmd/server/main.go
 
 # Run Stage
 FROM alpine:latest
 
+RUN apk --no-cache add ca-certificates
+
 WORKDIR /root/
 
 COPY --from=builder /app/nexus-backend .
+COPY --from=builder /app/.env .
+
+# Create uploads directory
+RUN mkdir -p uploads
 
 EXPOSE 8080
 

@@ -1,18 +1,229 @@
-<div class="h-[calc(100vh-64px)] mt-16 p-6 overflow-x-auto overflow-y-hidden" cdkDropListGroup>
+<div class="h-[calc(100vh-48px)] mt-12 overflow-x-auto overflow-y-hidden flex flex-col transition-all duration-300 custom-scrollbar"
+    cdkDropListGroup cdkScrollable [ngStyle]="boardBackgroundStyle()">
 
-    @if (board(); as data) {
-    <div class="flex h-full gap-6 min-w-fit pb-4 snap-x px-6">
+    <!-- Board Header Bar -->
+    <div
+        class="flex items-center gap-3 px-4 py-2 flex-shrink-0 bg-black/40 backdrop-blur-md border-b border-white/5 z-10">
+        @if (board(); as data) {
+        <div class="flex items-center gap-3 h-9">
+            <h2 class="text-lg font-bold text-white shrink-0 shadow-black drop-shadow-md">{{ data.title }}</h2>
+            <button (click)="toggleStar()" class="p-1.5 rounded-lg hover:bg-white/10 transition-all"
+                [ngClass]="data.is_starred ? 'text-amber-400' : 'text-white/20'"
+                [title]="data.is_starred ? 'Unstar Board' : 'Star Board'">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                    [attr.fill]="data.is_starred ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2">
+                    <polygon
+                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                    </polygon>
+                </svg>
+            </button>
+        </div>
+        }
+
+        <!-- Search & Filter Area -->
+        <div class="flex-1 flex items-center gap-3 h-9">
+            <div class="relative group max-w-sm w-full">
+                <input #searchInput type="text" [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)"
+                    placeholder="Search cards..."
+                    class="nexus-field w-full !pl-10 text-sm placeholder-white/50 bg-slate-700/75 border-slate-500/35"
+                    style="padding-left: 2.5rem;">
+                <span
+                    class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-white/50 group-focus-within:text-violet-500 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
+                    </svg>
+                </span>
+            </div>
+
+            <button (click)="toggleFilterDropdown()"
+                class="nexus-topbar-btn relative"
+                [class.border-violet-500]="hasActiveFilters()" [class.bg-violet-500_10]="hasActiveFilters()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+                </svg>
+                Filter
+                @if (hasActiveFilters()) {
+                <span class="ml-1 w-2 h-2 rounded-full bg-violet-500"></span>
+                }
+
+                <!-- Filter Dropdown Overlay -->
+                @if (showFilterDropdown()) {
+                <div class="absolute top-12 left-0 z-50 text-left" (click)="$event.stopPropagation()">
+                    @if (board(); as data) {
+                    <app-filter-dropdown [boardId]="data.id" [workspaceId]="data.workspace_id"
+                        [selectedLabelIds]="selectedLabelIds()" [selectedMemberIds]="selectedMemberIds()"
+                        [activeFilters]="activeFilters()" [collapseEmpty]="collapseEmpty()"
+                        (filterChanged)="onFilterChanged()" (collapseChanged)="onCollapseChanged($event)"
+                        (keywordChanged)="onKeywordChanged($event)" (close)="showFilterDropdown.set(false)">
+                    </app-filter-dropdown>
+                    }
+                </div>
+                }
+            </button>
+
+            <button (click)="toggleAutomationRules()"
+                class="nexus-topbar-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                </svg>
+                Automation
+            </button>
+
+            <!-- View Switcher -->
+            <app-view-switcher [currentView]="currentView()"
+                (viewChanged)="currentView.set($event)"></app-view-switcher>
+        </div>
+
+        <div class="flex items-center gap-2 h-9">
+            <button (click)="openBoardSettings()"
+                class="nexus-topbar-btn"
+                title="Board Settings">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3" />
+                    <path
+                        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                </svg>
+                <span class="hidden md:inline">Board Settings</span>
+            </button>
+
+            <button (click)="toggleArchivedSidebar()"
+                class="nexus-topbar-btn hover:text-amber-300"
+                title="Archived Items">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="20" height="5" x="2" y="3" rx="1" />
+                    <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
+                    <path d="M10 12h4" />
+                </svg>
+                <span class="hidden md:inline font-medium">Archived</span>
+            </button>
+            <button (click)="toggleActivitySidebar()"
+                class="nexus-topbar-btn hover:text-violet-300"
+                title="Board Activity">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
+                <span class="hidden md:inline font-medium">Board Activity</span>
+            </button>
+            <button (click)="openShareModal()"
+                class="nexus-topbar-btn nexus-topbar-btn-primary shadow-lg shadow-violet-500/20">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <circle cx="18" cy="5" r="3" />
+                    <circle cx="6" cy="12" r="3" />
+                    <circle cx="18" cy="19" r="3" />
+                    <path d="m8.59 13.51 6.83 3.98" />
+                    <path d="m8.59 10.49 6.83-3.98" />
+                </svg>
+                Print/Share
+            </button>
+        </div>
+    </div>
+
+    @if (suggestionsEnabled() && showBoardSuggestionHint()) {
+    <div class="mx-4 mt-2 px-3 py-2 rounded-lg border border-violet-400/30 bg-violet-500/10 text-violet-100 text-xs flex items-center justify-between gap-3">
+        <span>Tip: Drag cards between columns to update progress, and use `F` to focus card search quickly.</span>
+        <button (click)="dismissBoardSuggestionHint()" class="text-violet-200/80 hover:text-white text-xs px-2 py-1 rounded hover:bg-white/10 transition-colors">
+            Dismiss
+        </button>
+    </div>
+    }
+
+    @if (suggestionsEnabled() && showEmptyBoardHint() && board() && board()!.columns?.length === 0) {
+    <div class="mx-4 mt-3 px-4 py-3 rounded-xl border border-emerald-400/30 bg-emerald-500/10 text-emerald-100 text-sm flex flex-wrap items-center justify-between gap-3">
+        <span>Start here: create your first column, then add your first card.</span>
+        <div class="flex items-center gap-2">
+            <button (click)="openAddColumn()" class="px-3 py-1.5 rounded-md bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium transition-colors">
+                Add first column
+            </button>
+            <button (click)="dismissEmptyBoardHint()" class="px-3 py-1.5 rounded-md bg-white/10 hover:bg-white/20 text-emerald-100 text-xs transition-colors">
+                Dismiss
+            </button>
+        </div>
+    </div>
+    }
+
+    @if (suggestionsEnabled() && showEmptyBoardHint() && board() && board()!.columns?.length > 0 && board()!.columns[0]?.cards?.length === 0) {
+    <div class="mx-4 mt-3 px-4 py-3 rounded-xl border border-cyan-400/30 bg-cyan-500/10 text-cyan-100 text-sm flex flex-wrap items-center justify-between gap-3">
+        <span>Nice. Next step: add your first card in <strong>{{ board()!.columns[0].name }}</strong>.</span>
+        <div class="flex items-center gap-2">
+            <button (click)="addFirstCardQuick()" class="px-3 py-1.5 rounded-md bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-medium transition-colors">
+                Add first card
+            </button>
+            <button (click)="dismissEmptyBoardHint()" class="px-3 py-1.5 rounded-md bg-white/10 hover:bg-white/20 text-cyan-100 text-xs transition-colors">
+                Dismiss
+            </button>
+        </div>
+    </div>
+    }
+
+    @if (filteredBoard(); as data) {
+    @if (showShareModal()) {
+    <app-share-modal [workspaceId]="data.workspace_id" [boardId]="data.id" [boardTitle]="data.title" (closed)="closeShareModal()"></app-share-modal>
+    }
+
+    @if (showBoardSettings()) {
+    <app-board-settings-modal [boardId]="data.id" [currentTitle]="data.title" [currentBgColor]="data.background_color"
+        [currentBgImage]="data.background_image_url" [currentDocumentationNotes]="data.documentation_notes"
+        (close)="closeBoardSettings()">
+    </app-board-settings-modal>
+    }
+    }
+
+    @if (showActivitySidebar() && board()) {
+    <app-board-activity-sidebar [boardId]="board()!.id" (closed)="closeSidebars()">
+    </app-board-activity-sidebar>
+    }
+
+    @if (showArchivedSidebar()) {
+    <app-archive-explorer [archivedCards]="archivedCards()" [connectedTo]="columnIds()" (closed)="closeSidebars()"
+        (cardDropped)="dropToArchive($event)" (restoreCard)="restoreCard($event)" (deletePermanently)="deletePermanently($event)">
+    </app-archive-explorer>
+    }
+
+    <!-- Card Detail Modal -->
+    @if (selectedCardId()) {
+    <app-card-detail [cardId]="selectedCardId()!" (close)="closeCardDetail()"></app-card-detail>
+    }
+
+    <!-- View Content Area -->
+    <!-- View Content Area -->
+    @switch (currentView()) {
+    @case ('BOARD') {
+    @if (filteredBoard(); as data) {
+    <div cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropColumn($event)"
+        class="flex items-start h-full gap-4 min-w-fit pb-3 snap-x px-4 flex-grow">
 
         <!-- Columns Loop -->
         @for (column of data.columns; track column.id) {
-        <app-nexus-column [column]="column" (cardDropped)="drop($event)" class="snap-center">
+        @if (!column._collapsed) {
+        <app-nexus-column cdkDrag [cdkDragData]="column" [column]="column" [connectedTo]="dropListIds()"
+            [cardTemplates]="cardTemplates()" [wipLimit]="5" (cardDropped)="drop($event)" (dragStarted)="onDragStarted()"
+            (dragEnded)="onDragEnded()" (cdkDragStarted)="onDragStarted()" (cdkDragEnded)="onDragEnded()"
+            [cdkDragStartDelay]="0" class="snap-center">
+
+            <div *cdkDragPlaceholder class="column-drop-placeholder"></div>
+
         </app-nexus-column>
+        } @else {
+        <!-- Collapsed Column Stub -->
+        <div class="w-12 h-[120px] mt-[2px] flex-shrink-0 bg-black/30 rounded-xl border border-white/10 flex flex-col items-center py-2 gap-2 opacity-70 hover:opacity-100 transition-all cursor-pointer"
+            title="{{ column.name }} (0 cards)">
+            <span class="text-white/70 text-[11px] font-semibold [writing-mode:vertical-lr] rotate-180 leading-none">{{ column.name }}</span>
+        </div>
+        }
         }
 
         <!-- Add Column Button -->
-        <div class="w-80 flex-shrink-0">
+        <div class="w-72 flex-shrink-0 mt-[2px]">
             <button (click)="openAddColumn()"
-                class="w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 text-white/60 font-medium flex items-center justify-center gap-2 transition-all">
+                class="w-full py-2 rounded-lg bg-black/25 hover:bg-black/35 border border-white/10 text-white/70 text-sm font-medium flex items-center justify-center gap-2 transition-all">
                 <span>+</span> Add Another Column
             </button>
         </div>
@@ -20,14 +231,44 @@
     </div>
     } @else {
     <!-- Loading Skeleton -->
-    <div class="flex gap-6 animate-pulse">
-        @for (i of [1,2,3]; track i) {
-        <div class="w-80 h-96 rounded-xl bg-white/5 border border-white/5 p-4 space-y-4">
-            <div class="h-6 w-1/2 bg-white/10 rounded"></div>
-            <div class="h-24 bg-white/5 rounded-lg"></div>
-            <div class="h-24 bg-white/5 rounded-lg"></div>
-        </div>
-        }
-    </div>
+    <app-nexus-skeleton type="column" />
+    }
+    }
+    @case ('TABLE') {
+    @if (filteredBoard(); as data) {
+    <app-table-view [board]="data"></app-table-view>
+    }
+    }
+    @case ('CALENDAR') {
+    @if (filteredBoard(); as data) {
+    <app-calendar-view [board]="data"></app-calendar-view>
+    }
+    }
+    @case ('ANALYTICS') {
+    @if (board(); as data) {
+    <app-analytics-view [boardId]="data.id"></app-analytics-view>
+    }
+    }
+    @case ('PLANNER') {
+    @if (filteredBoard(); as data) {
+    <app-planner-view [board]="data"></app-planner-view>
+    }
+    }
     }
 </div>
+
+<router-outlet></router-outlet>
+
+<!-- Floating Action Button (Mobile/Quick Action) -->
+<button (click)="openAddColumn()"
+    class="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-violet-600 hover:bg-violet-500 text-white shadow-2xl flex items-center justify-center transition-all hover:scale-110 active:scale-95 z-30 md:hidden"
+    title="Add Column">
+    <span class="text-3xl">+</span>
+</button>
+
+<!-- Automation Rules Modal -->
+@if (showAutomationRules()) {
+@if (board(); as data) {
+<app-automation-rules [boardId]="data.id" (close)="toggleAutomationRules()"></app-automation-rules>
+}
+}

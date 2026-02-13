@@ -1,0 +1,344 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
+    (click)="close.emit()">
+    <div class="w-full max-w-2xl bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
+        (click)="$event.stopPropagation()">
+
+        <!-- Header -->
+        <div class="p-5 border-b border-white/10 flex justify-between items-center bg-white/5 shrink-0">
+            <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                <span>⚙️</span> Account Settings
+            </h2>
+            <button (click)="close.emit()" class="text-white/40 hover:text-white transition-colors text-lg">✕</button>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex border-b border-white/10 bg-white/[0.02] shrink-0">
+            <button (click)="switchTab('profile')"
+                [class]="activeTab() === 'profile' ? 'text-violet-400 border-violet-500' : 'text-white/50 border-transparent hover:text-white/70'"
+                class="flex-1 px-4 py-3 text-sm font-semibold border-b-2 transition-all flex items-center justify-center gap-2">
+                👤 Profile
+            </button>
+            <button (click)="switchTab('activity')"
+                [class]="activeTab() === 'activity' ? 'text-violet-400 border-violet-500' : 'text-white/50 border-transparent hover:text-white/70'"
+                class="flex-1 px-4 py-3 text-sm font-semibold border-b-2 transition-all flex items-center justify-center gap-2">
+                📊 Activity
+            </button>
+            <button (click)="switchTab('settings')"
+                [class]="activeTab() === 'settings' ? 'text-violet-400 border-violet-500' : 'text-white/50 border-transparent hover:text-white/70'"
+                class="flex-1 px-4 py-3 text-sm font-semibold border-b-2 transition-all flex items-center justify-center gap-2">
+                🔔 Notifications
+            </button>
+            <button (click)="switchTab('accessibility')"
+                [class]="activeTab() === 'accessibility' ? 'text-violet-400 border-violet-500' : 'text-white/50 border-transparent hover:text-white/70'"
+                class="flex-1 px-4 py-3 text-sm font-semibold border-b-2 transition-all flex items-center justify-center gap-2">
+                ♿ Access
+            </button>
+        </div>
+
+        <!-- Tab Content (scrollable) -->
+        <div class="flex-1 overflow-y-auto custom-scrollbar">
+
+            <!-- PROFILE TAB -->
+            @if (activeTab() === 'profile') {
+            <div class="p-6 space-y-6">
+                <!-- Avatar Section -->
+                <div class="flex items-center gap-6">
+                    <div class="relative group">
+                        <div
+                            class="w-20 h-20 rounded-full bg-white/10 overflow-hidden border-2 border-white/20 group-hover:border-violet-500/50 transition-colors">
+                            @if (avatarPreview()) {
+                            <img [src]="avatarPreview()" class="w-full h-full object-cover" alt="Avatar Preview">
+                            } @else if (avatarUrl) {
+                            <img [src]="avatarUrl" class="w-full h-full object-cover" alt="Avatar">
+                            } @else {
+                            <div class="w-full h-full flex items-center justify-center text-2xl text-white/40">👤</div>
+                            }
+                        </div>
+                        <label
+                            class="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                            <span class="text-white text-xs font-semibold">Change</span>
+                            <input type="file" accept="image/*" (change)="onAvatarSelected($event)" class="hidden">
+                        </label>
+                    </div>
+                    <div>
+                        <p class="text-white font-semibold text-lg">{{ user()?.name || 'Your Name' }}</p>
+                        <p class="text-white/40 text-sm">{{ user()?.email }}</p>
+                        @if (selectedFile) {
+                        <span class="text-xs text-emerald-400 mt-1 inline-block">📷 New photo selected</span>
+                        }
+                    </div>
+                </div>
+
+                <!-- Display Name -->
+                <div class="space-y-1.5">
+                    <label class="text-xs font-semibold text-white/50 uppercase tracking-wider">Display Name</label>
+                    <input type="text" [(ngModel)]="name"
+                        class="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-violet-500 transition-all"
+                        placeholder="Your display name">
+                </div>
+
+                <!-- Username -->
+                <div class="space-y-1.5">
+                    <label class="text-xs font-semibold text-white/50 uppercase tracking-wider">Username</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 text-sm">&#64;</span>
+                        <input type="text" [(ngModel)]="username"
+                            class="w-full bg-black/20 border border-white/10 rounded-lg pl-8 pr-4 py-2.5 text-white text-sm focus:outline-none focus:border-violet-500 transition-all"
+                            placeholder="username">
+                    </div>
+                </div>
+
+                <!-- Bio -->
+                <div class="space-y-1.5">
+                    <label class="text-xs font-semibold text-white/50 uppercase tracking-wider">Bio</label>
+                    <textarea [(ngModel)]="bio" rows="3"
+                        class="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-violet-500 transition-all resize-none"
+                        placeholder="Tell us about yourself..."></textarea>
+                </div>
+
+                <!-- Language -->
+                <div class="space-y-1.5">
+                    <label class="text-xs font-semibold text-white/50 uppercase tracking-wider">Language</label>
+                    <select [(ngModel)]="language"
+                        class="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-violet-500 transition-all appearance-none">
+                        <option value="en" class="bg-slate-900">English</option>
+                        <option value="id" class="bg-slate-900">Bahasa Indonesia</option>
+                        <option value="ja" class="bg-slate-900">日本語</option>
+                        <option value="ko" class="bg-slate-900">한국어</option>
+                        <option value="zh" class="bg-slate-900">中文</option>
+                    </select>
+                </div>
+
+                <!-- Save Button -->
+                <div class="flex justify-end pt-2">
+                    <button (click)="saveProfile()" [disabled]="isSaving()"
+                        class="px-6 py-2.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-white font-semibold text-sm shadow-lg shadow-violet-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                        @if (isSaving()) { <span class="animate-spin">⏳</span> }
+                        Save Profile
+                    </button>
+                </div>
+            </div>
+            }
+
+            <!-- ACTIVITY TAB -->
+            @if (activeTab() === 'activity') {
+            <div class="p-6">
+                @if (activities().length === 0) {
+                <div class="text-center py-12 text-white/30">
+                    <div class="text-4xl mb-3">📋</div>
+                    <p class="text-sm">No activity yet</p>
+                </div>
+                } @else {
+                <div class="space-y-3">
+                    @for (activity of activities(); track activity.id) {
+                    <div
+                        class="flex items-start gap-3 p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] transition-colors">
+                        <div
+                            class="w-8 h-8 rounded-full bg-violet-500/20 flex items-center justify-center text-xs shrink-0">
+                            @switch (activity.action) {
+                            @case ('created') { <span>✨</span> }
+                            @case ('updated') { <span>✏️</span> }
+                            @case ('moved') { <span>➡️</span> }
+                            @case ('archived') { <span>📦</span> }
+                            @case ('deleted') { <span>🗑️</span> }
+                            @default { <span>📌</span> }
+                            }
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm text-white/80">
+                                {{ getActivityLabel(activity) }}
+                            </p>
+                            @if (getActivityContext(activity)) {
+                            <p class="text-[11px] text-white/40 mt-0.5">{{ getActivityContext(activity) }}</p>
+                            }
+                            <p class="text-xs text-white/30 mt-0.5">{{ getTimeAgo(activity.created_at) }}</p>
+                        </div>
+                    </div>
+                    }
+                </div>
+                @if (activities().length < activityTotal()) { <button (click)="loadMoreActivity()"
+                    class="w-full mt-4 py-2 text-sm text-violet-400 hover:text-violet-300 transition-colors">
+                    Load more...
+                    </button>
+                    }
+                    }
+            </div>
+            }
+
+            <!-- NOTIFICATION SETTINGS TAB -->
+            @if (activeTab() === 'settings') {
+            <div class="p-6 space-y-6">
+                @if (preferences()) {
+                <!-- Email Notifications -->
+                <div>
+                    <h3 class="text-sm font-bold text-white/70 mb-3 uppercase tracking-wider">Email Notifications</h3>
+                    <div class="space-y-2">
+                        <label
+                            class="flex items-center justify-between p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] transition-colors cursor-pointer">
+                            <span class="text-sm text-white/70">Comments on your cards</span>
+                            <input type="checkbox" [checked]="preferences()!.notify_comments"
+                                (change)="togglePref('notify_comments')" class="w-4 h-4 accent-violet-500">
+                        </label>
+                        <label
+                            class="flex items-center justify-between p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] transition-colors cursor-pointer">
+                            <span class="text-sm text-white/70">Due date reminders</span>
+                            <input type="checkbox" [checked]="preferences()!.notify_due_dates"
+                                (change)="togglePref('notify_due_dates')" class="w-4 h-4 accent-violet-500">
+                        </label>
+                        <label
+                            class="flex items-center justify-between p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] transition-colors cursor-pointer">
+                            <span class="text-sm text-white/70">Removed from a card</span>
+                            <input type="checkbox" [checked]="preferences()!.notify_removed_from_card"
+                                (change)="togglePref('notify_removed_from_card')" class="w-4 h-4 accent-violet-500">
+                        </label>
+                        <label
+                            class="flex items-center justify-between p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] transition-colors cursor-pointer">
+                            <span class="text-sm text-white/70">Attachment added</span>
+                            <input type="checkbox" [checked]="preferences()!.notify_attachments"
+                                (change)="togglePref('notify_attachments')" class="w-4 h-4 accent-violet-500">
+                        </label>
+                        <label
+                            class="flex items-center justify-between p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] transition-colors cursor-pointer">
+                            <span class="text-sm text-white/70">Card created</span>
+                            <input type="checkbox" [checked]="preferences()!.notify_card_created"
+                                (change)="togglePref('notify_card_created')" class="w-4 h-4 accent-violet-500">
+                        </label>
+                        <label
+                            class="flex items-center justify-between p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] transition-colors cursor-pointer">
+                            <span class="text-sm text-white/70">Card moved</span>
+                            <input type="checkbox" [checked]="preferences()!.notify_card_moved"
+                                (change)="togglePref('notify_card_moved')" class="w-4 h-4 accent-violet-500">
+                        </label>
+                        <label
+                            class="flex items-center justify-between p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] transition-colors cursor-pointer">
+                            <span class="text-sm text-white/70">Card archived</span>
+                            <input type="checkbox" [checked]="preferences()!.notify_card_archived"
+                                (change)="togglePref('notify_card_archived')" class="w-4 h-4 accent-violet-500">
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Desktop Notifications -->
+                <div>
+                    <h3 class="text-sm font-bold text-white/70 mb-3 uppercase tracking-wider">Desktop Notifications</h3>
+                    <label
+                        class="flex items-center justify-between p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] transition-colors cursor-pointer">
+                        <span class="text-sm text-white/70">Allow desktop notifications</span>
+                        <input type="checkbox" [checked]="preferences()!.allow_desktop_notifications"
+                            (change)="togglePref('allow_desktop_notifications')" class="w-4 h-4 accent-violet-500">
+                    </label>
+                </div>
+
+                <!-- Other -->
+                <div>
+                    <h3 class="text-sm font-bold text-white/70 mb-3 uppercase tracking-wider">Other Preferences</h3>
+                    <div class="space-y-2">
+                        <label
+                            class="flex items-center justify-between p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] transition-colors cursor-pointer">
+                            <span class="text-sm text-white/70">Enable suggestions</span>
+                            <input type="checkbox" [checked]="preferences()!.enable_suggestions"
+                                (change)="togglePref('enable_suggestions')" class="w-4 h-4 accent-violet-500">
+                        </label>
+                        <label
+                            class="flex items-center justify-between p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] transition-colors cursor-pointer">
+                            <span class="text-sm text-white/70">Marketing & product emails</span>
+                            <input type="checkbox" [checked]="preferences()!.marketing_emails"
+                                (change)="togglePref('marketing_emails')" class="w-4 h-4 accent-violet-500">
+                        </label>
+                        <label
+                            class="flex items-center justify-between p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] transition-colors cursor-pointer">
+                            <span class="text-sm text-white/70">Analytics cookies</span>
+                            <input type="checkbox" [checked]="preferences()!.cookie_analytics"
+                                (change)="togglePref('cookie_analytics')" class="w-4 h-4 accent-violet-500">
+                        </label>
+                    </div>
+                </div>
+
+                <!-- QA Tools -->
+                <div>
+                    <h3 class="text-sm font-bold text-white/70 mb-3 uppercase tracking-wider">QA Tools</h3>
+                    <div class="p-3 rounded-lg bg-white/[0.03] border border-white/10 space-y-2">
+                        <p class="text-xs text-white/50">Manually trigger due-date reminder scan (admin allowlist
+                            required).</p>
+                        <button (click)="runDueRemindersNow()" [disabled]="isRunningDueReminders()"
+                            class="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-semibold transition-all disabled:opacity-50">
+                            @if (isRunningDueReminders()) { Running... } @else { Run Due Reminders Now }
+                        </button>
+                        @if (dueReminderResult()) {
+                        <div class="text-xs text-white/70">
+                            <p>Cards scanned: {{ dueReminderResult()!.stats.cards_scanned }}</p>
+                            <p>Recipients checked: {{ dueReminderResult()!.stats.recipients_checked }}</p>
+                            <p>Notifications sent: {{ dueReminderResult()!.stats.notifications_sent }}</p>
+                            <p>Duration: {{ dueReminderResult()!.duration_ms }} ms</p>
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Save Button -->
+                <div class="flex justify-end">
+                    <button (click)="savePreferences()" [disabled]="isSaving()"
+                        class="px-6 py-2.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-white font-semibold text-sm shadow-lg shadow-violet-500/20 transition-all disabled:opacity-50 flex items-center gap-2">
+                        @if (isSaving()) { <span class="animate-spin">⏳</span> }
+                        Save Preferences
+                    </button>
+                </div>
+                } @else {
+                <div class="text-center py-12 text-white/30">
+                    <div class="text-4xl mb-3">🔔</div>
+                    <p class="text-sm">Loading preferences...</p>
+                </div>
+                }
+            </div>
+            }
+
+            <!-- ACCESSIBILITY TAB -->
+            @if (activeTab() === 'accessibility') {
+            <div class="p-6 space-y-6">
+                @if (preferences()) {
+                <div>
+                    <h3 class="text-sm font-bold text-white/70 mb-3 uppercase tracking-wider">Accessibility</h3>
+                    <div class="space-y-2">
+                        <label
+                            class="flex items-center justify-between p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] transition-colors cursor-pointer">
+                            <div>
+                                <span class="text-sm text-white/70 block">Color blind friendly mode</span>
+                                <span class="text-xs text-white/30">Adjusts colors and adds patterns for better
+                                    distinction</span>
+                            </div>
+                            <input type="checkbox" [checked]="preferences()!.color_blind_mode"
+                                (change)="togglePref('color_blind_mode')" class="w-4 h-4 accent-violet-500">
+                        </label>
+                        <label
+                            class="flex items-center justify-between p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] transition-colors cursor-pointer">
+                            <div>
+                                <span class="text-sm text-white/70 block">Disable keyboard shortcuts</span>
+                                <span class="text-xs text-white/30">Turn off all keyboard shortcuts (?, f, c,
+                                    etc.)</span>
+                            </div>
+                            <input type="checkbox" [checked]="preferences()!.disable_keyboard_shortcuts"
+                                (change)="togglePref('disable_keyboard_shortcuts')" class="w-4 h-4 accent-violet-500">
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Save Button -->
+                <div class="flex justify-end">
+                    <button (click)="savePreferences()" [disabled]="isSaving()"
+                        class="px-6 py-2.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-white font-semibold text-sm shadow-lg shadow-violet-500/20 transition-all disabled:opacity-50 flex items-center gap-2">
+                        @if (isSaving()) { <span class="animate-spin">⏳</span> }
+                        Save
+                    </button>
+                </div>
+                } @else {
+                <div class="text-center py-12 text-white/30">
+                    <div class="text-4xl mb-3">♿</div>
+                    <p class="text-sm">Loading accessibility settings...</p>
+                </div>
+                }
+            </div>
+            }
+
+        </div>
+    </div>
+</div>

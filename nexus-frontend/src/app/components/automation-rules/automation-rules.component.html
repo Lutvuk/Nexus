@@ -1,0 +1,264 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-md" (click)="close.emit()"></div>
+
+    <div class="relative z-10 w-full max-w-4xl bg-[#0f172a] border border-white/10 rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
+        <div class="flex justify-between items-center p-6 border-b border-white/10 bg-black/20">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                    <span class="text-xl">A</span>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-white tracking-tight">Automation Rules</h2>
+                    <p class="text-xs text-blue-300/60 font-medium uppercase tracking-wider">Board automations</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button (click)="createDeveloperPresets()"
+                    class="px-3 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/30 text-emerald-200 text-xs font-semibold transition-colors">
+                    Add Dev Presets
+                </button>
+                <button (click)="close.emit()" class="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-white/50 hover:text-white transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="flex flex-1 overflow-hidden">
+            <div class="w-64 bg-black/20 border-r border-white/10 p-4 space-y-2 hidden md:block">
+                <button (click)="selectPanel('rules')"
+                    class="w-full text-left px-4 py-3 rounded-xl border font-medium flex items-center gap-3 transition-colors"
+                    [ngClass]="activePanel() === 'rules' ? 'bg-blue-600/10 text-blue-400 border-blue-500/20' : 'text-white/70 border-white/10 hover:bg-white/5'">
+                    Rules
+                </button>
+                <div class="px-4 py-2">
+                    <p class="text-[10px] text-white/30 uppercase tracking-widest font-bold mb-2">Categories</p>
+                    <button (click)="selectPanel('calendar')"
+                        class="w-full text-left px-4 py-3 rounded-xl transition-colors flex items-center gap-3"
+                        [ngClass]="activePanel() === 'calendar' ? 'bg-white/10 text-white border border-white/20' : 'text-white/50 hover:bg-white/5 hover:text-white/80'">
+                        Calendar
+                    </button>
+                    <button (click)="selectPanel('dueDate')"
+                        class="w-full text-left px-4 py-3 rounded-xl transition-colors flex items-center gap-3"
+                        [ngClass]="activePanel() === 'dueDate' ? 'bg-white/10 text-white border border-white/20' : 'text-white/50 hover:bg-white/5 hover:text-white/80'">
+                        Due Date
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex-1 flex flex-col overflow-hidden bg-gradient-to-b from-slate-900 to-slate-950">
+                <div class="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
+
+                    @if (rules().length === 0 && !showForm()) {
+                    <div class="flex flex-col items-center justify-center py-20 text-center">
+                        <h3 class="text-xl font-bold text-white mb-2">No rules yet</h3>
+                        <p class="text-white/40 max-w-sm mb-8">Automate repetitive work for your board.</p>
+                        <button (click)="showForm.set(true)"
+                            class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all">
+                            Create My First Rule
+                        </button>
+                    </div>
+                    }
+
+                    @for (rule of rules(); track rule.id) {
+                    <div class="group relative bg-white/5 hover:bg-white/[0.07] border border-white/10 rounded-2xl p-5 transition-all hover:shadow-xl hover:shadow-black/20 hover:border-white/20 duration-300"
+                        [class.opacity-60]="!rule.is_active" [class.grayscale]="!rule.is_active">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                                <span class="text-sm font-bold">{{ getRuleIcon(rule.trigger_type) }}</span>
+                            </div>
+
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h3 class="font-bold text-white text-lg truncate pr-4">{{ rule.name }}</h3>
+                                    <div class="flex items-center gap-3">
+                                        <button (click)="toggleRule(rule.id)"
+                                            class="relative w-11 h-6 rounded-full transition-colors duration-200 ease-in-out focus:outline-none"
+                                            [ngClass]="rule.is_active ? 'bg-green-500' : 'bg-white/20'">
+                                            <span class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform duration-200 ease-in-out shadow-sm"
+                                                [ngClass]="rule.is_active ? 'translate-x-5' : 'translate-x-0'"></span>
+                                        </button>
+
+                                        <button (click)="deleteRule(rule.id)"
+                                            class="p-1.5 text-white/20 hover:text-red-400 hover:bg-white/5 rounded-lg transition-colors"
+                                            title="Delete Rule">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <p class="text-sm text-white/50 leading-relaxed font-medium">
+                                    {{ getRuleDescription(rule) }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    }
+
+                    @if (showForm()) {
+                    <div class="bg-gradient-to-br from-blue-600/10 to-indigo-600/10 border border-blue-500/30 rounded-2xl p-6 animate-in fade-in zoom-in-95 duration-200">
+                        <h3 class="text-sm font-bold text-blue-400 uppercase tracking-wider mb-6 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-blue-400"></span> New Rule Builder
+                        </h3>
+
+                        <div class="space-y-8">
+                            <div class="space-y-4">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold text-white">1</span>
+                                    <span class="text-white/60 font-medium">Trigger</span>
+                                </div>
+
+                                <div class="pl-11">
+                                    <div class="flex flex-wrap items-center gap-3 text-xl text-white font-medium">
+                                        <span>When a card is</span>
+
+                                        <div class="relative group">
+                                            <select [ngModel]="selectedTrigger()" (ngModelChange)="selectedTrigger.set($event)"
+                                                class="appearance-none bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 pl-4 pr-10 py-1.5 rounded-lg cursor-pointer outline-none ring-2 ring-transparent focus:ring-blue-500/50 transition-all font-bold">
+                                                <option value="CARD_MOVED">moved to</option>
+                                                <option value="CARD_CREATED">created in</option>
+                                                <option value="LABEL_ADDED">labeled with</option>
+                                                <option value="CHECKLIST_DONE">checklist completed</option>
+                                                <option value="CARD_COMPLETED">marked complete</option>
+                                                <option value="DUE_DATE_SET">due date set</option>
+                                                <option value="CALENDAR_DATE_SET">dated in calendar</option>
+                                                <option value="DUE_DATE_OVERDUE">overdue</option>
+                                            </select>
+                                            <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-blue-300/50">v</div>
+                                        </div>
+
+                                        @if (selectedTrigger() === 'CARD_MOVED' || selectedTrigger() === 'CARD_CREATED') {
+                                        <div class="relative group">
+                                            <select [ngModel]="conditionColumnId()" (ngModelChange)="conditionColumnId.set($event)"
+                                                class="appearance-none bg-white/10 hover:bg-white/20 text-white pl-4 pr-10 py-1.5 rounded-lg cursor-pointer outline-none ring-2 ring-transparent focus:ring-white/20 transition-all font-bold max-w-[200px]">
+                                                <option value="" disabled selected>any column</option>
+                                                @for (col of columns(); track col.id) {
+                                                <option [value]="col.id">{{ col.name }}</option>
+                                                }
+                                            </select>
+                                            <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-white/30">v</div>
+                                        </div>
+                                        } @else if (selectedTrigger() === 'LABEL_ADDED') {
+                                        <div class="relative group">
+                                            <select [ngModel]="conditionLabelId()" (ngModelChange)="conditionLabelId.set($event)"
+                                                class="appearance-none bg-white/10 hover:bg-white/20 text-white pl-4 pr-10 py-1.5 rounded-lg cursor-pointer outline-none ring-2 ring-transparent focus:ring-white/20 transition-all font-bold max-w-[220px]">
+                                                <option value="" selected>any label</option>
+                                                @for (label of labels(); track label.id) {
+                                                <option [value]="label.id">{{ label.name }}</option>
+                                                }
+                                            </select>
+                                            <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-white/30">v</div>
+                                        </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold text-white">2</span>
+                                    <span class="text-white/60 font-medium">Action</span>
+                                </div>
+
+                                <div class="pl-11">
+                                    <div class="flex flex-wrap items-center gap-3 text-xl text-white font-medium">
+                                        <span>Then</span>
+
+                                        <div class="relative group">
+                                            <select [ngModel]="selectedAction()" (ngModelChange)="selectedAction.set($event)"
+                                                class="appearance-none bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 pl-4 pr-10 py-1.5 rounded-lg cursor-pointer outline-none ring-2 ring-transparent focus:ring-emerald-500/50 transition-all font-bold">
+                                                <option value="MOVE_CARD">move it to</option>
+                                                <option value="ADD_LABEL">add label</option>
+                                                <option value="SET_COMPLETE">mark complete</option>
+                                                <option value="ASSIGN_MEMBER">assign to</option>
+                                                <option value="ARCHIVE_CARD">archive it</option>
+                                                <option value="SET_DUE_DATE">set due in</option>
+                                                <option value="NOTIFY_ASSIGNEES">notify assignees</option>
+                                                <option value="NOTIFY_ADMINS">notify admins</option>
+                                            </select>
+                                            <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-emerald-300/50">v</div>
+                                        </div>
+
+                                        @if (selectedAction() === 'MOVE_CARD') {
+                                        <div class="relative group">
+                                            <select [ngModel]="paramColumnId()" (ngModelChange)="paramColumnId.set($event)"
+                                                class="appearance-none bg-white/10 hover:bg-white/20 text-white pl-4 pr-10 py-1.5 rounded-lg cursor-pointer outline-none ring-2 ring-transparent focus:ring-white/20 transition-all font-bold max-w-[200px]">
+                                                <option value="" disabled selected>target column</option>
+                                                @for (col of columns(); track col.id) {
+                                                <option [value]="col.id">{{ col.name }}</option>
+                                                }
+                                            </select>
+                                            <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-white/30">v</div>
+                                        </div>
+                                        } @else if (selectedAction() === 'ADD_LABEL') {
+                                        <div class="relative group">
+                                            <select [ngModel]="paramLabelId()" (ngModelChange)="paramLabelId.set($event)"
+                                                class="appearance-none bg-white/10 hover:bg-white/20 text-white pl-4 pr-10 py-1.5 rounded-lg cursor-pointer outline-none ring-2 ring-transparent focus:ring-white/20 transition-all font-bold">
+                                                <option value="" disabled selected>select label</option>
+                                                @for (label of labels(); track label.id) {
+                                                <option [value]="label.id">{{ label.name }}</option>
+                                                }
+                                            </select>
+                                            <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-white/30">v</div>
+                                        </div>
+                                        } @else if (selectedAction() === 'ASSIGN_MEMBER') {
+                                        <div class="relative group">
+                                            <select [ngModel]="paramUserId()" (ngModelChange)="paramUserId.set($event)"
+                                                class="appearance-none bg-white/10 hover:bg-white/20 text-white pl-4 pr-10 py-1.5 rounded-lg cursor-pointer outline-none ring-2 ring-transparent focus:ring-white/20 transition-all font-bold">
+                                                <option value="" disabled selected>select member</option>
+                                                @for (member of members(); track member.id) {
+                                                <option [value]="member.id">{{ member.username || member.name }}</option>
+                                                }
+                                            </select>
+                                            <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-white/30">v</div>
+                                        </div>
+                                        } @else if (selectedAction() === 'SET_DUE_DATE') {
+                                        <div class="relative group">
+                                            <select [ngModel]="paramDueDays()" (ngModelChange)="paramDueDays.set(+$event)"
+                                                class="appearance-none bg-white/10 hover:bg-white/20 text-white pl-4 pr-10 py-1.5 rounded-lg cursor-pointer outline-none ring-2 ring-transparent focus:ring-white/20 transition-all font-bold">
+                                                <option [ngValue]="0">today</option>
+                                                <option [ngValue]="1">1 day</option>
+                                                <option [ngValue]="3">3 days</option>
+                                                <option [ngValue]="7">7 days</option>
+                                                <option [ngValue]="14">14 days</option>
+                                            </select>
+                                            <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-white/30">v</div>
+                                        </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-end gap-3 pt-4 border-t border-white/10">
+                                <button (click)="showForm.set(false)" class="px-5 py-2.5 rounded-xl font-medium text-white/50 hover:text-white hover:bg-white/5 transition-colors">
+                                    Discard
+                                </button>
+                                <button (click)="createRule()" [disabled]="!selectedTrigger() || !selectedAction()"
+                                    class="px-8 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-bold transition-all shadow-lg shadow-blue-500/25 active:scale-95">
+                                    Save Automation
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                </div>
+
+                @if (!showForm() && rules().length > 0) {
+                <div class="p-6 border-t border-white/10 bg-black/20">
+                    <button (click)="showForm.set(true)"
+                        class="w-full py-4 bg-white/5 border border-dashed border-white/20 rounded-xl text-white/50 hover:bg-white/10 hover:text-white hover:border-white/40 transition-all flex items-center justify-center gap-3 font-medium group">
+                        <span class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white/60 group-hover:bg-blue-500 group-hover:text-white transition-colors">+</span>
+                        Create Another Rule
+                    </button>
+                </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>

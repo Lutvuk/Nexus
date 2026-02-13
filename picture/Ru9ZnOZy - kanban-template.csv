@@ -1,0 +1,31 @@
+Card ID,Card Name,Card URL,Card Description,Labels,Members,Due Date,Attachment Count,Attachment Links,Checklist Item Total Count,Checklist Item Completed Count,Vote Count,Comment Count,Last Activity Date,List ID,List Name,Board ID,Board Name,Archived,Start Date,Due Complete,Due Reminder
+698b3cb80adbc9e671ec7dd6,Backlog,https://trello.com/c/bdOlJsgc/1-backlog,"A list of the things we think we want to do, maybe not quite ready for work, but high likelihood of being worked on.
+
+This is the staging area where specs should get fleshed out.
+
+No limit on the list size, but we should reconsider if it gets long.",,,,1,https://trello.com/1/cards/698b3cb80adbc9e671ec7dd6/attachments/698b3cb80adbc9e671ec8069/download/Backlog.png,0,0,0,0,2026-02-10T14:12:09.215Z,698b3cb80adbc9e671ec7daa,Backlog,698b3cb80adbc9e671ec7db1,Kanban Template,false,,false,
+698b3cb80adbc9e671ec7dec,[Example task],https://trello.com/c/Fb2BNc7S/12-example-task,,,,,0,,0,0,0,0,2026-02-10T14:12:08.802Z,698b3cb80adbc9e671ec7daa,Backlog,698b3cb80adbc9e671ec7db1,Kanban Template,false,,false,
+698b3cb80adbc9e671ec7dda,To Do,https://trello.com/c/l47Z8zAW/3-to-do,"This is a list of things that are good to pull off to work on, prioritized.
+
+If there are too few items here, we should swarm against getting tasks ready for work.",,,,1,https://trello.com/1/cards/698b3cb80adbc9e671ec7dda/attachments/698b3cb80adbc9e671ec807b/download/To-Do.png,0,0,0,0,2026-02-10T14:12:26.430Z,698b3cb80adbc9e671ec7dac,To Do,698b3cb80adbc9e671ec7db1,Kanban Template,false,,false,
+698b3cb80adbc9e671ec7ddc,Doing,https://trello.com/c/xezqnNIj/4-doing,"These are the things that folks are working on.
+
+All our engineers should have at least one item in this state.
+
+If there are too few things here, they should be pulled off Todo.
+
+When doing is done, cards move to Code Review.",,,,1,https://trello.com/1/cards/698b3cb80adbc9e671ec7ddc/attachments/698b3cb80adbc9e671ec8084/download/Doing.png,0,0,0,0,2026-02-10T14:12:09.294Z,698b3cb80adbc9e671ec7dad,Doing,698b3cb80adbc9e671ec7db1,Kanban Template,false,,false,
+698b3cb80adbc9e671ec7dea,[Example task],https://trello.com/c/h71Qh0YA/11-example-task,,,,,0,,0,0,0,0,2026-02-10T14:12:08.801Z,698b3cb80adbc9e671ec7dad,Doing,698b3cb80adbc9e671ec7db1,Kanban Template,false,,false,
+698b3cb80adbc9e671ec7de0,Code Review,https://trello.com/c/ac0FJiqn/6-code-review,"This list is for items in code review. 
+
+When a task has gotten approval, it moves off to Testing.
+
+If there are too many cards here, we should break off from other tasks to get code review done.",,,,1,https://trello.com/1/cards/698b3cb80adbc9e671ec7de0/attachments/698b3cb80adbc9e671ec809b/download/Code_Review.png,0,0,0,0,2026-02-10T14:12:09.209Z,698b3cb80adbc9e671ec7daf,Code Review,698b3cb80adbc9e671ec7db1,Kanban Template,false,,false,
+698b3cb80adbc9e671ec7de4,"This list has the List Limits Power-up enabled, to help the team prioritize and remove bottlenecks before picking up new work. The list will be highlighted if the number of cards in it passes the limit that the team determines based on team size.",https://trello.com/c/VRnNmAfU/8-this-list-has-the-list-limits-power-up-enabled-to-help-the-team-prioritize-and-remove-bottlenecks-before-picking-up-new-work-the,,,,,0,,0,0,0,0,2026-02-10T14:12:08.799Z,698b3cb80adbc9e671ec7daf,Code Review,698b3cb80adbc9e671ec7db1,Kanban Template,false,,false,
+698b3cb80adbc9e671ec7de6,[Example task],https://trello.com/c/t5efGbCF/9-example-task,,,,,0,,0,0,0,0,2026-02-10T14:12:08.800Z,698b3cb80adbc9e671ec7daf,Code Review,698b3cb80adbc9e671ec7db1,Kanban Template,false,,false,
+698b3cb80adbc9e671ec7de8,[Example task],https://trello.com/c/LC0oUgSi/10-example-task,,,,,0,,0,0,0,0,2026-02-10T14:12:08.800Z,698b3cb80adbc9e671ec7daf,Code Review,698b3cb80adbc9e671ec7db1,Kanban Template,false,,false,
+698b3cb80adbc9e671ec7de2,Testing,https://trello.com/c/L8Q1FuTR/7-testing,"Cards come here after being code reviewed, and we're in a place for QA and fixing things QA finds. Design review also happens at this stage.
+
+If we have too many cards here, we should throw a flag and figure out whether we're building things that take too many passes of QA, or if we're bottlenecked on QA time.",,,,1,https://trello.com/1/cards/698b3cb80adbc9e671ec7de2/attachments/698b3cb80adbc9e671ec80a4/download/Verifying.png,0,0,0,0,2026-02-10T14:12:09.254Z,698b3cb80adbc9e671ec7db0,Testing,698b3cb80adbc9e671ec7db1,Kanban Template,false,,false,
+698b3cb80adbc9e671ec7dde,Done,https://trello.com/c/PDzUXIaH/5-done,We shipped it to production! ,,,,2,"https://trello.com/1/cards/698b3cb80adbc9e671ec7dde/attachments/698b3cb80adbc9e671ec808d/download/done.png, https://trello.com/1/cards/698b3cb80adbc9e671ec7dde/attachments/698b3cb80adbc9e671ec8092/download/Done.png",0,0,0,0,2026-02-10T14:12:09.232Z,698b3cb80adbc9e671ec7dae,Done 🎉,698b3cb80adbc9e671ec7db1,Kanban Template,false,,false,
+698b3cb80adbc9e671ec7df0,[Completed task],https://trello.com/c/4anS5KRB/14-completed-task,,,,2020-01-23T20:00:00.000Z,0,,0,0,0,0,2026-02-10T14:12:08.804Z,698b3cb80adbc9e671ec7dae,Done 🎉,698b3cb80adbc9e671ec7db1,Kanban Template,false,,true,1440

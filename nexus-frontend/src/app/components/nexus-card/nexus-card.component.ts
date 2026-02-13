@@ -1,14 +1,16 @@
 import { Component, Input, ChangeDetectionStrategy, inject, ElementRef, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { Card } from '../../models/board.model';
 import { BoardService } from '../../services/board.service';
 import { DialogService } from '../../services/dialog.service';
+import { toBackendUrl } from '../../core/runtime-config';
 
 @Component({
   selector: 'app-nexus-card',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './nexus-card.component.html',
   styleUrl: './nexus-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -16,12 +18,18 @@ import { DialogService } from '../../services/dialog.service';
 export class NexusCardComponent {
   private boardService = inject(BoardService);
   private dialogService = inject(DialogService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   @Input({ required: true }) card!: Card;
 
   isEditing = false;
   editedTitle = '';
   isBusy = false;
+
+  // --- Open Card Detail Modal ---
+  // Handled by RouterLink now
+
 
   // --- Edit Mode ---
 
@@ -79,10 +87,58 @@ export class NexusCardComponent {
       this.boardService.deleteCard(this.card.id).subscribe({
         next: () => {
           this.isBusy = false;
-          window.location.reload();
+          this.boardService.triggerRefresh();
         },
         error: () => this.isBusy = false
       });
     }
+  }
+  // --- Helpers ---
+  get coverImage(): string | null {
+    if (!this.card.cover_attachment_id || !this.card.attachments) return null;
+    const attachment = this.card.attachments.find(a => a.id === this.card.cover_attachment_id);
+    return attachment ? toBackendUrl(attachment.file_path) : null;
+  }
+
+  getInitials(name: string): string {
+    return name
+      .split(' ')
+      .map(n => n[0])
+      .slice(0, 2)
+      .join('')
+      .toUpperCase();
+  }
+
+  resolveAvatarUrl(url?: string): string {
+    return toBackendUrl(url);
+  }
+
+  isOverdue(dateStr: string | undefined): boolean {
+    if (!dateStr) return false;
+    return new Date(dateStr) < new Date();
+  }
+
+  isDueSoon(dateStr: string | undefined): boolean {
+    if (!dateStr) return false;
+    const due = new Date(dateStr).getTime();
+    const now = new Date().getTime();
+    const diff = due - now;
+    return diff > 0 && diff < 24 * 60 * 60 * 1000; // Within 24 hours
+  }
+
+  isChecklistComplete(): boolean {
+    if (!this.card.checklists || this.card.checklists.length === 0) return false;
+    // flatten items
+    const allItems = this.card.checklists.flatMap(c => c.items || []);
+    if (allItems.length === 0) return false;
+    return allItems.every(i => i.is_completed);
+  }
+
+  getChecklistProgress(): string {
+    if (!this.card.checklists) return '';
+    const allItems = this.card.checklists.flatMap(c => c.items || []);
+    if (allItems.length === 0) return '';
+    const completed = allItems.filter(i => i.is_completed).length;
+    return `${completed}/${allItems.length}`;
   }
 }

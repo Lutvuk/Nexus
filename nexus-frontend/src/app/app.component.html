@@ -1,4 +1,13 @@
+@if (isLoading()) {
+<div class="fixed top-0 left-0 w-full h-1 z-[100] bg-violet-900/20 overflow-hidden">
+    <div
+        class="h-full bg-violet-500 animate-[loading_1s_ease-in-out_infinite] origin-left w-full absolute top-0 left-0">
+    </div>
+</div>
+}
+@if (showNavbar()) {
 <app-nexus-navbar></app-nexus-navbar>
+}
 <router-outlet></router-outlet>
 <app-nexus-toast></app-nexus-toast>
 <app-nexus-global-dialog></app-nexus-global-dialog>

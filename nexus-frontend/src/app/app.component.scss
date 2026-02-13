@@ -1,0 +1,14 @@
+@keyframes loading {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    50% {
+        transform: translateX(0%);
+    }
+
+    // Slower in middle
+    100% {
+        transform: translateX(100%);
+    }
+}

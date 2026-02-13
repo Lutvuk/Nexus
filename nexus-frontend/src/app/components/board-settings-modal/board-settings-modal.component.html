@@ -1,0 +1,175 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" (click)="close.emit()">
+    <div class="bg-slate-900 border border-white/10 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col"
+        (click)="$event.stopPropagation()">
+
+        <!-- Header -->
+        <div class="px-6 py-4 border-b border-white/5 flex items-center justify-between bg-white/5">
+            <h3 class="text-lg font-semibold text-white">Board Settings</h3>
+            <button (click)="close.emit()" class="text-white/50 hover:text-white transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex items-center gap-1 p-1 mx-6 mt-4 bg-white/5 rounded-xl">
+            <button (click)="activeTab = 'general'" [class.bg-white_10]="activeTab === 'general'"
+                [class.text-white]="activeTab === 'general'" [class.text-white_50]="activeTab !== 'general'"
+                class="flex-1 py-1.5 text-sm font-medium rounded-lg transition-all">
+                General
+            </button>
+            <button (click)="activeTab = 'fields'" [class.bg-white_10]="activeTab === 'fields'"
+                [class.text-white]="activeTab === 'fields'" [class.text-white_50]="activeTab !== 'fields'"
+                class="flex-1 py-1.5 text-sm font-medium rounded-lg transition-all">
+                Custom Fields
+            </button>
+            <button (click)="activeTab = 'docs'" [class.bg-white_10]="activeTab === 'docs'"
+                [class.text-white]="activeTab === 'docs'" [class.text-white_50]="activeTab !== 'docs'"
+                class="flex-1 py-1.5 text-sm font-medium rounded-lg transition-all">
+                Docs Notepad
+            </button>
+        </div>
+
+        <!-- Content -->
+        <div class="p-6 space-y-6 overflow-y-auto">
+            <!-- General Tab -->
+            <div *ngIf="activeTab === 'general'" class="space-y-6 animate-in fade-in slide-in-from-left-4 duration-200">
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-white/70">Board Title</label>
+                    <input type="text" [(ngModel)]="title"
+                        class="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-violet-500 transition-all">
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-white/70">Background</label>
+                    <div class="grid grid-cols-5 gap-2">
+                        @for (bg of presets; track bg) {
+                        <button (click)="selectedBg = bg; selectedImage = ''"
+                            class="w-full aspect-square rounded-lg border hover:scale-105 transition-all text-[0px]"
+                            [class.border-white]="selectedBg === bg" [ngClass]="{'border-white/10': selectedBg !== bg}"
+                            [style.background]="bg">
+                            Select
+                        </button>
+                        }
+                    </div>
+
+                    <div class="mt-4 grid grid-cols-3 gap-2">
+                        @for (img of imagePresets; track img) {
+                        <button (click)="selectedImage = img; selectedBg = ''"
+                            class="w-full aspect-video rounded-lg border hover:scale-105 transition-all bg-cover bg-center"
+                            [class.border-white]="selectedImage === img"
+                            [ngClass]="{'border-white/10': selectedImage !== img}"
+                            [style.background-image]="'url(' + img + ')'">
+                        </button>
+                        }
+                    </div>
+
+                    <div class="mt-4 space-y-2">
+                        <label class="text-xs font-medium text-white/50">Upload background image</label>
+                        <label class="inline-flex items-center gap-2 px-3 h-9 rounded-lg bg-white/5 border border-white/10 text-white text-sm hover:bg-white/10 transition-all cursor-pointer">
+                            <span>{{ uploadingBackground ? 'Uploading...' : 'Choose image' }}</span>
+                            <input type="file" accept="image/png,image/jpeg,image/webp" class="hidden"
+                                (change)="onBackgroundSelected($event)">
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Custom Fields Tab -->
+            <div *ngIf="activeTab === 'fields'" class="animate-in fade-in slide-in-from-right-4 duration-200">
+                <app-custom-field-manager [boardId]="boardId"></app-custom-field-manager>
+            </div>
+
+            <!-- Docs Notepad Tab -->
+            <div *ngIf="activeTab === 'docs'" class="animate-in fade-in slide-in-from-right-4 duration-200">
+                <div class="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                        <div>
+                            <h4 class="text-sm font-semibold text-white">Team Documentation Notepad</h4>
+                            <p class="text-xs text-white/50">Keep board notes, decisions, and quick docs in one place.</p>
+                        </div>
+                        <button (click)="createNote()"
+                            [disabled]="isSavingNote"
+                            class="px-3 h-9 rounded-lg bg-cyan-600 hover:bg-cyan-500 disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-medium transition-all">
+                            {{ isSavingNote ? 'Saving...' : 'New Note' }}
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)] gap-4 min-h-[420px]">
+                        <div class="rounded-lg border border-white/10 bg-slate-950/40 p-2 space-y-2 overflow-y-auto">
+                            @if (notes.length === 0) {
+                            <div class="px-2 py-6 text-center text-xs text-white/40">
+                                No notes yet. Create one to start documenting.
+                            </div>
+                            }
+
+                            @for (note of notes; track note.id) {
+                            <button (click)="selectNote(note.id)"
+                                class="w-full text-left rounded-lg border px-3 py-2 transition-all"
+                                [ngClass]="{
+                                    'border-cyan-400/40 bg-cyan-500/10': selectedNoteId === note.id,
+                                    'border-white/10 bg-white/[0.02]': selectedNoteId !== note.id
+                                }">
+                                <p class="text-xs font-semibold text-white truncate">{{ note.title || 'Untitled note' }}</p>
+                                <p class="text-[11px] text-white/40 mt-1">{{ note.updatedAt | date:'MMM d, h:mm a' }}</p>
+                            </button>
+                            }
+                        </div>
+
+                        <div class="rounded-lg border border-white/10 bg-slate-950/40 p-4 flex flex-col gap-3">
+                            @if (!hasSelectedNote()) {
+                            <div class="h-full flex items-center justify-center text-sm text-white/40">
+                                Select a note or create a new one.
+                            </div>
+                            } @else {
+                            <div class="space-y-2">
+                                <label class="text-xs font-medium text-white/60">Title</label>
+                                <input type="text" [(ngModel)]="noteTitle" maxlength="120"
+                                    class="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500 transition-all">
+                            </div>
+
+                            <div class="space-y-2 flex-1 min-h-[240px]">
+                                <label class="text-xs font-medium text-white/60">Content</label>
+                                <textarea [(ngModel)]="noteContent"
+                                    class="w-full h-full min-h-[240px] p-3 rounded-lg bg-white/5 border border-white/10 text-white/90 text-sm leading-relaxed resize-none focus:outline-none focus:border-cyan-500 transition-all"
+                                    placeholder="Write meeting notes, architecture decisions, API snippets, or anything your team needs."></textarea>
+                            </div>
+
+                            <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+                                <p class="text-[11px] text-white/40">
+                                    Last update:
+                                    <span class="text-white/55">{{ getSelectedNoteUpdatedAt() | date:'MMM d, y h:mm a' }}</span>
+                                </p>
+                                <div class="flex items-center gap-2">
+                                    <button (click)="deleteCurrentNote()"
+                                        [disabled]="isSavingNote"
+                                        class="px-3 h-9 rounded-lg bg-red-500/15 hover:bg-red-500/25 disabled:opacity-60 disabled:cursor-not-allowed text-red-300 text-sm transition-all">
+                                        Delete
+                                    </button>
+                                    <button (click)="saveCurrentNote()"
+                                        [disabled]="isSavingNote"
+                                        class="px-3 h-9 rounded-lg bg-cyan-600 hover:bg-cyan-500 disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-medium transition-all">
+                                        {{ isSavingNote ? 'Saving...' : 'Save Note' }}
+                                    </button>
+                                </div>
+                            </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-6 py-4 border-t border-white/5 flex justify-end gap-3 bg-white/5">
+            <button (click)="close.emit()"
+                class="px-4 py-2 rounded-lg text-white/70 hover:bg-white/5 transition-all font-medium">Cancel</button>
+            <button (click)="save()"
+                class="px-4 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 text-white font-medium shadow-lg shadow-violet-500/20 transition-all">
+                Save Changes
+            </button>
+        </div>
+    </div>
+</div>

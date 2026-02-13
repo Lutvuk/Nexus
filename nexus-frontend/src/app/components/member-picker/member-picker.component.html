@@ -1,0 +1,55 @@
+<div class="bg-gray-900 border border-white/10 rounded-xl p-4 w-72 shadow-2xl backdrop-blur-xl"
+    (click)="$event.stopPropagation()">
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="text-white font-medium">Members</h3>
+        <button (click)="close.emit()" class="text-gray-400 hover:text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+
+    <input type="text" [ngModel]="searchQuery" (ngModelChange)="onSearch($event)"
+        placeholder="Search by name or email..."
+        class="w-full bg-black/20 border border-white/10 rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-violet-500 mb-3 placeholder-gray-500">
+
+    <div class="space-y-1 max-h-60 overflow-y-auto custom-scrollbar">
+        @if (isLoading()) {
+        <div class="text-center text-white/40 py-2">Searching...</div>
+        } @else {
+        @for (user of searchResults(); track user.id) {
+        <div class="flex items-center justify-between p-2 hover:bg-white/5 rounded cursor-pointer group"
+            (click)="toggleMember(user)">
+
+            <div class="flex items-center gap-3">
+                <!-- Avatar -->
+                <div
+                    class="h-8 w-8 rounded-full bg-violet-500 flex items-center justify-center text-white font-bold text-xs">
+                    @if (user.avatar_url) {
+                    <img [src]="resolveAvatarUrl(user.avatar_url)" class="w-full h-full object-cover rounded-full" alt="User Avatar">
+                    } @else {
+                    {{ user.name.charAt(0).toUpperCase() }}
+                    }
+                </div>
+                <div>
+                    <div class="text-sm text-white font-medium">{{ user.name }}</div>
+                    <div class="text-xs text-white/40">{{ user.email }}</div>
+                </div>
+            </div>
+
+            <div *ngIf="activeMemberIds.includes(user.id)" class="text-violet-400">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                        clip-rule="evenodd" />
+                </svg>
+            </div>
+        </div>
+        }
+        @if (searchResults().length === 0) {
+        <div class="text-center text-white/40 py-2">No users found.</div>
+        }
+        }
+    </div>
+</div>

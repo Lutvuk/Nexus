@@ -1,0 +1,73 @@
+{
+  "agents": [
+    "generic"
+  ],
+  "installed": [
+    {
+      "name": "product-brief",
+      "source": "https://github.com/meganopus/mountd-prompter/tree/main/skills/product-brief",
+      "type": "skill",
+      "installedAt": "2026-02-08T15:05:13.379Z"
+    },
+    {
+      "name": "prd-generator",
+      "source": "https://github.com/meganopus/mountd-prompter/tree/main/skills/prd-generator",
+      "type": "skill",
+      "installedAt": "2026-02-08T15:05:13.385Z"
+    },
+    {
+      "name": "design-system",
+      "source": "https://github.com/meganopus/mountd-prompter/tree/main/skills/design-system",
+      "type": "skill",
+      "installedAt": "2026-02-08T15:05:13.390Z"
+    },
+    {
+      "name": "erd-generator",
+      "source": "https://github.com/meganopus/mountd-prompter/tree/main/skills/erd-generator",
+      "type": "skill",
+      "installedAt": "2026-02-08T15:05:13.395Z"
+    },
+    {
+      "name": "api-contract-generator",
+      "source": "https://github.com/meganopus/mountd-prompter/tree/main/skills/api-contract-generator",
+      "type": "skill",
+      "installedAt": "2026-02-08T15:05:13.401Z"
+    },
+    {
+      "name": "fsd-generator",
+      "source": "https://github.com/meganopus/mountd-prompter/tree/main/skills/fsd-generator",
+      "type": "skill",
+      "installedAt": "2026-02-08T15:05:13.409Z"
+    },
+    {
+      "name": "tdd-generator",
+      "source": "https://github.com/meganopus/mountd-prompter/tree/main/skills/tdd-generator",
+      "type": "skill",
+      "installedAt": "2026-02-08T15:05:13.416Z"
+    },
+    {
+      "name": "wireframe-generator",
+      "source": "https://github.com/meganopus/mountd-prompter/tree/main/skills/wireframe-generator",
+      "type": "skill",
+      "installedAt": "2026-02-08T15:05:13.421Z"
+    },
+    {
+      "name": "epic-generator",
+      "source": "https://github.com/meganopus/mountd-prompter/tree/main/skills/epic-generator",
+      "type": "skill",
+      "installedAt": "2026-02-08T15:05:13.426Z"
+    },
+    {
+      "name": "story-generator",
+      "source": "https://github.com/meganopus/mountd-prompter/tree/main/skills/story-generator",
+      "type": "skill",
+      "installedAt": "2026-02-08T15:05:13.432Z"
+    },
+    {
+      "name": "project-kickoff-heavy.md",
+      "source": "https://github.com/meganopus/mountd-prompter/tree/main/workflows/project-kickoff-heavy.md",
+      "type": "workflow",
+      "installedAt": "2026-02-08T15:05:13.436Z"
+    }
+  ]
+}
